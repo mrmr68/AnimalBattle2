@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">معركة الحيوانات</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_online_battle">معركة أونلاين</string>
+    <string name="nav_animals">الحيوانات</string>
+    <string name="nav_shop">المتجر</string>
+    <string name="nav_lucky_wheel">عجلة الحظ</string>
+    <string name="nav_recent_battles">المعارك الأخيرة</string>
+    <string name="nav_map">الخريطة</string>
+    <string name="nav_settings">الإعدادات</string>
+    <string name="nav_profile">الملف الشخصي</string>
+    <string name="nav_battle">معركة</string>
+    <string name="nav_leaderboard">لوحة المتصدرين</string>
+
+    <!-- Common -->
+    <string name="back">رجوع</string>
+    <string name="close">إغلاق</string>
+    <string name="ok">موافق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="confirm">تأكيد</string>
+    <string name="loading">جاري التحميل...</string>
+    <string name="error">خطأ</string>
+    <string name="success">نجاح</string>
+
+    <!-- Home -->
+    <string name="welcome_message">مرحباً، %1$s!</string>
+    <string name="level_label">المستوى %1$d</string>
+    <string name="coins_label">%1$d عملة</string>
+    <string name="trophies_label">%1$d كأس</string>
+    <string name="xp_progress">XP: %1$d / %2$d</string>
+
+    <!-- Profile -->
+    <string name="profile_title">الملف الشخصي</string>
+    <string name="player_name">اسم اللاعب</string>
+    <string name="player_level">المستوى %1$d</string>
+    <string name="total_coins">إجمالي العملات: %1$d</string>
+    <string name="total_trophies">إجمالي الأكواب: %1$d</string>
+    <string name="selected_animal">الحيوان المختار</string>
+    <string name="edit_name">تعديل الاسم</string>
+    <string name="enter_name">أدخل اسمك</string>
+
+    <!-- Animals -->
+    <string name="animals_title">الحيوانات</string>
+    <string name="animal_selected">مختار</string>
+    <string name="animal_locked">مقفل</string>
+    <string name="animal_unlock">فتح</string>
+    <string name="animal_upgrade">ترقية</string>
+    <string name="animal_hp">الصحة: %1$d</string>
+    <string name="animal_level">المستوى %1$d</string>
+    <string name="animal_abilities">القدرات</string>
+    <string name="upgrade_cost">التكلفة: %1$d عملة</string>
+
+    <!-- Animal Names -->
+    <string name="animal_lion">أسد</string>
+    <string name="animal_tiger">نمر</string>
+    <string name="animal_leopard">فهد</string>
+    <string name="animal_cheetah">فهد سريع</string>
+    <string name="animal_bear">دب</string>
+    <string name="animal_wolf">ذئب</string>
+    <string name="animal_gorilla">غوريلا</string>
+    <string name="animal_rhino">واد Rhino</string>
+    <string name="animal_elephant">فيل</string>
+    <string name="animal_crocodile">تمساح</string>
+    <string name="animal_eagle">نسر</string>
+    <string name="animal_cobra">كوبرا</string>
+
+    <!-- Abilities -->
+    <string name="ability_1">القدرة ١</string>
+    <string name="ability_2">القدرة ٢</string>
+    <string name="ability_3">القدرة ٣</string>
+    <string name="ability_damage">الضرر: %1$d</string>
+    <string name="ability_xp_cost">تكلفة XP: %1$d</string>
+
+    <!-- Battle -->
+    <string name="battle_title">معركة</string>
+    <string name="online_battle">معركة أونلاين</string>
+    <string name="find_match">البحث عن مباراة</string>
+    <string name="battle_starting">تبدأ المعركة...</string>
+    <string name="your_turn">دورك</string>
+    <string name="opponent_turn">دور الخصم</string>
+    <string name="increase_power">زيادة القوة</string>
+    <string name="attack">هجوم</string>
+    <string name="use_ability">استخدام القدرة</string>
+    <string name="power_label">القوة: %1$d</string>
+    <string name="hp_label">الصحة: %1$d</string>
+    <string name="xp_label">XP: %1$d</string>
+
+    <!-- Questions -->
+    <string name="question_time">الوقت: %1$ds</string>
+    <string name="time_up">انتهى الوقت!</string>
+    <string name="correct_answer">صحيح! +%1$d قوة</string>
+    <string name="wrong_answer">إجابة خاطئة!</string>
+
+    <!-- Lifelines -->
+    <string name="lifeline_50_50">٥٠/٥٠</string>
+    <string name="lifeline_skip">تخطي</string>
+    <string name="lifeline_cost">التكلفة: %1$d عملة</string>
+
+    <!-- Battle Result -->
+    <string name="victory">نصر!</string>
+    <string name="defeat">هزيمة</string>
+    <string name="reward_coins">+%1$d عملة</string>
+    <string name="reward_trophies">+%1$d كأس</string>
+    <string name="continue_button">متابعة</string>
+    <string name="back_to_home">العودة للرئيسية</string>
+
+    <!-- Lucky Wheel -->
+    <string name="lucky_wheel_title">عجلة الحظ</string>
+    <string name="spin_wheel">دوّر!</string>
+    <string name="spin_cost">تكلفة الدوران: %1$d عملة</string>
+    <string name="wheel_result">فزت بـ: %1$s</string>
+    <string name="no_spins_left">لا توجد دورات متبقية اليوم</string>
+
+    <!-- Shop -->
+    <string name="shop_title">المتجر</string>
+    <string name="coin_packs">حزم العملات</string>
+    <string name="animal_upgrades">ترقيات الحيوانات</string>
+    <string name="skins">ال Дмитр</string>
+    <string name="items">الأغراض</string>
+    <string name="buy">شراء</string>
+    <string name="buy_confirm">شراء %1$s مقابل %2$d عملة؟</string>
+    <string name="not_enough_coins">عملات غير كافية!</string>
+    <string name="purchase_success">تم الشراء بنجاح!</string>
+
+    <!-- Map -->
+    <string name="map_title">الخريطة</string>
+    <string name="level_node">المرحلة %1$d</string>
+    <string name="level_completed">مكتملة</string>
+    <string name="level_available">متاحة</string>
+    <string name="level_locked">مقفلة</string>
+    <string name="stage_label">الطور %1$d</string>
+
+    <!-- Recent Battles -->
+    <string name="recent_battles_title">المعارك الأخيرة</string>
+    <string name="no_battles">لا توجد معارك حديثة</string>
+    <string name="vs_opponent">ضد %1$s</string>
+    <string name="battle_win">فوز</string>
+    <string name="battle_loss">خسارة</string>
+
+    <!-- Settings -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="language">اللغة</string>
+    <string name="sound_effects">المؤثرات الصوتية</string>
+    <string name="music">الموسيقى</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="account">الحساب</string>
+    <string name="about">حول</string>
+    <string name="version">الإصدار %1$s</string>
+    <string name="language_english">English</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_arabic">العربية</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">لوحة المتصدرين الأسبوعية</string>
+    <string name="rank_label">#%1$d</string>
+    <string name="your_rank">ترتيبك: %1$d</string>
+
+    <!-- Daily Login -->
+    <string name="daily_login_title">المكافأة اليومية</string>
+    <string name="day_label">اليوم %1$d</string>
+    <string name="claimed">تم الاستلام</string>
+    <string name="claim_reward">استلام</string>
+    <string name="streak_bonus">مكافأة متتالية!</string>
+
+    <!-- Chest -->
+    <string name="chest_ready">الصندوق جاهز!</string>
+    <string name="chest_opening">جاري فتح الصندوق...</string>
+    <string name="chest_contents">محتويات الصندوق</string>
+
+    <!-- Level Up -->
+    <string name="level_up">ترقية المستوى!</string>
+    <string name="new_level">وصلت إلى المستوى %1$d!</string>
+
+    <!-- Dialogs -->
+    <string name="quit_confirm">هل أنت متأكد من الخروج؟</string>
+    <string name="reset_confirm">إعادة تعيين كل التقدم؟</string>
+    <string name="yes">نعم</string>
+    <string name="no">لا</string>
+</resources>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Animal Battle</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_online_battle">Online Battle</string>
+    <string name="nav_animals">Animals</string>
+    <string name="nav_shop">Shop</string>
+    <string name="nav_lucky_wheel">Lucky Wheel</string>
+    <string name="nav_recent_battles">Recent Battles</string>
+    <string name="nav_map">Map</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_battle">Battle</string>
+    <string name="nav_leaderboard">Leaderboard</string>
+
+    <!-- Common -->
+    <string name="back">Back</string>
+    <string name="close">Close</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="loading">Loading…</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+
+    <!-- Home -->
+    <string name="welcome_message">Welcome, %1$s!</string>
+    <string name="level_label">Level %1$d</string>
+    <string name="coins_label">%1$d Coins</string>
+    <string name="trophies_label">%1$d Trophies</string>
+    <string name="xp_progress">XP: %1$d / %2$d</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Profile</string>
+    <string name="player_name">Player Name</string>
+    <string name="player_level">Level %1$d</string>
+    <string name="total_coins">Total Coins: %1$d</string>
+    <string name="total_trophies">Total Trophies: %1$d</string>
+    <string name="selected_animal">Selected Animal</string>
+    <string name="edit_name">Edit Name</string>
+    <string name="enter_name">Enter your name</string>
+
+    <!-- Animals -->
+    <string name="animals_title">Animals</string>
+    <string name="animal_selected">Selected</string>
+    <string name="animal_locked">Locked</string>
+    <string name="animal_unlock">Unlock</string>
+    <string name="animal_upgrade">Upgrade</string>
+    <string name="animal_hp">HP: %1$d</string>
+    <string name="animal_level">Level %1$d</string>
+    <string name="animal_abilities">Abilities</string>
+    <string name="upgrade_cost">Cost: %1$d Coins</string>
+
+    <!-- Animal Names -->
+    <string name="animal_lion">Lion</string>
+    <string name="animal_tiger">Tiger</string>
+    <string name="animal_leopard">Leopard</string>
+    <string name="animal_cheetah">Cheetah</string>
+    <string name="animal_bear">Bear</string>
+    <string name="animal_wolf">Wolf</string>
+    <string name="animal_gorilla">Gorilla</string>
+    <string name="animal_rhino">Rhino</string>
+    <string name="animal_elephant">Elephant</string>
+    <string name="animal_crocodile">Crocodile</string>
+    <string name="animal_eagle">Eagle</string>
+    <string name="animal_cobra">Cobra</string>
+
+    <!-- Abilities -->
+    <string name="ability_1">Ability 1</string>
+    <string name="ability_2">Ability 2</string>
+    <string name="ability_3">Ability 3</string>
+    <string name="ability_damage">Damage: %1$d</string>
+    <string name="ability_xp_cost">XP Cost: %1$d</string>
+
+    <!-- Battle -->
+    <string name="battle_title">Battle</string>
+    <string name="online_battle">Online Battle</string>
+    <string name="find_match">Find Match</string>
+    <string name="battle_starting">Battle Starting…</string>
+    <string name="your_turn">Your Turn</string>
+    <string name="opponent_turn">Opponent\'s Turn</string>
+    <string name="increase_power">Increase Power</string>
+    <string name="attack">Attack</string>
+    <string name="use_ability">Use Ability</string>
+    <string name="power_label">Power: %1$d</string>
+    <string name="hp_label">HP: %1$d</string>
+    <string name="xp_label">XP: %1$d</string>
+
+    <!-- Questions -->
+    <string name="question_time">Time: %1$ds</string>
+    <string name="time_up">Time\'s Up!</string>
+    <string name="correct_answer">Correct! +%1$d Power</string>
+    <string name="wrong_answer">Wrong Answer!</string>
+
+    <!-- Lifelines -->
+    <string name="lifeline_50_50">50/50</string>
+    <string name="lifeline_skip">Skip</string>
+    <string name="lifeline_cost">Cost: %1$d Coins</string>
+
+    <!-- Battle Result -->
+    <string name="victory">Victory!</string>
+    <string name="defeat">Defeat</string>
+    <string name="reward_coins">+%1$d Coins</string>
+    <string name="reward_trophies">+%1$d Trophy</string>
+    <string name="continue_button">Continue</string>
+    <string name="back_to_home">Back to Home</string>
+
+    <!-- Lucky Wheel -->
+    <string name="lucky_wheel_title">Lucky Wheel</string>
+    <string name="spin_wheel">Spin!</string>
+    <string name="spin_cost">Spin Cost: %1$d Coins</string>
+    <string name="wheel_result">You won: %1$s</string>
+    <string name="no_spins_left">No spins left today</string>
+
+    <!-- Shop -->
+    <string name="shop_title">Shop</string>
+    <string name="coin_packs">Coin Packs</string>
+    <string name="animal_upgrades">Animal Upgrades</string>
+    <string name="skins">Skins</string>
+    <string name="items">Items</string>
+    <string name="buy">Buy</string>
+    <string name="buy_confirm">Buy %1$s for %2$d Coins?</string>
+    <string name="not_enough_coins">Not enough coins!</string>
+    <string name="purchase_success">Purchase successful!</string>
+
+    <!-- Map -->
+    <string name="map_title">Map</string>
+    <string name="level_node">Level %1$d</string>
+    <string name="level_completed">Completed</string>
+    <string name="level_available">Available</string>
+    <string name="level_locked">Locked</string>
+    <string name="stage_label">Stage %1$d</string>
+
+    <!-- Recent Battles -->
+    <string name="recent_battles_title">Recent Battles</string>
+    <string name="no_battles">No recent battles</string>
+    <string name="vs_opponent">vs %1$s</string>
+    <string name="battle_win">Win</string>
+    <string name="battle_loss">Loss</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="language">Language</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="music">Music</string>
+    <string name="notifications">Notifications</string>
+    <string name="account">Account</string>
+    <string name="about">About</string>
+    <string name="version">Version %1$s</string>
+    <string name="language_english">English</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_arabic">العربية</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">Weekly Leaderboard</string>
+    <string name="rank_label">#%1$d</string>
+    <string name="your_rank">Your Rank: %1$d</string>
+
+    <!-- Daily Login -->
+    <string name="daily_login_title">Daily Login</string>
+    <string name="day_label">Day %1$d</string>
+    <string name="claimed">Claimed</string>
+    <string name="claim_reward">Claim</string>
+    <string name="streak_bonus">Streak Bonus!</string>
+
+    <!-- Chest -->
+    <string name="chest_ready">Chest Ready!</string>
+    <string name="chest_opening">Opening Chest…</string>
+    <string name="chest_contents">Chest Contents</string>
+
+    <!-- Level Up -->
+    <string name="level_up">Level Up!</string>
+    <string name="new_level">You reached Level %1$d!</string>
+
+    <!-- Dialogs -->
+    <string name="quit_confirm">Are you sure you want to quit?</string>
+    <string name="reset_confirm">Reset all progress?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+</resources>

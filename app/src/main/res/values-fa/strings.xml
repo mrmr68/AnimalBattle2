@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">نبرد حیوانات</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">خانه</string>
+    <string name="nav_online_battle">نبرد آنلاین</string>
+    <string name="nav_animals">حیوانات</string>
+    <string name="nav_shop">فروشگاه</string>
+    <string name="nav_lucky_wheel">چرخ شانس</string>
+    <string name="nav_recent_battles">نبردهای اخیر</string>
+    <string name="nav_map">نقشه</string>
+    <string name="nav_settings">تنظیمات</string>
+    <string name="nav_profile">پروفایل</string>
+    <string name="nav_battle">نبرد</string>
+    <string name="nav_leaderboard">جدول امتیازات</string>
+
+    <!-- Common -->
+    <string name="back">بازگشت</string>
+    <string name="close">بستن</string>
+    <string name="ok">تأیید</string>
+    <string name="cancel">لغو</string>
+    <string name="confirm">تأیید</string>
+    <string name="loading">در حال بارگذاری...</string>
+    <string name="error">خطا</string>
+    <string name="success">موفقیت</string>
+
+    <!-- Home -->
+    <string name="welcome_message">خوش آمدید، %1$s!</string>
+    <string name="level_label">سطح %1$d</string>
+    <string name="coins_label">%1$d سکه</string>
+    <string name="trophies_label">%1$d جام</string>
+    <string name="xp_progress">XP: %1$d / %2$d</string>
+
+    <!-- Profile -->
+    <string name="profile_title">پروفایل</string>
+    <string name="player_name">نام بازیکن</string>
+    <string name="player_level">سطح %1$d</string>
+    <string name="total_coins">کل سکه‌ها: %1$d</string>
+    <string name="total_trophies">کل جام‌ها: %1$d</string>
+    <string name="selected_animal">حیوان انتخابی</string>
+    <string name="edit_name">ویرایش نام</string>
+    <string name="enter_name">نام خود را وارد کنید</string>
+
+    <!-- Animals -->
+    <string name="animals_title">حیوانات</string>
+    <string name="animal_selected">انتخاب شده</string>
+    <string name="animal_locked">قفل</string>
+    <string name="animal_unlock">باز کردن</string>
+    <string name="animal_upgrade">ارتقاء</string>
+    <string name="animal_hp">سلامتی: %1$d</string>
+    <string name="animal_level">سطح %1$d</string>
+    <string name="animal_abilities">توانایی‌ها</string>
+    <string name="upgrade_cost">هزینه: %1$d سکه</string>
+
+    <!-- Animal Names -->
+    <string name="animal_lion">شیر</string>
+    <string name="animal_tiger">ببر</string>
+    <string name="animal_leopard">پلنگ</string>
+    <string name="animal_cheetah">یوزپلنگ</string>
+    <string name="animal_bear">خرس</string>
+    <string name="animal_wolf">گرگ</string>
+    <string name="animal_gorilla">گوریل</string>
+    <string name="animal_rhino">کرگدن</string>
+    <string name="animal_elephant">فیل</string>
+    <string name="animal_crocodile">تمساح</string>
+    <string name="animal_eagle">عقاب</string>
+    <string name="animal_cobra">کبری</string>
+
+    <!-- Abilities -->
+    <string name="ability_1">توانایی ۱</string>
+    <string name="ability_2">توانایی ۲</string>
+    <string name="ability_3">توانایی ۳</string>
+    <string name="ability_damage">ضرر: %1$d</string>
+    <string name="ability_xp_cost">هزینه XP: %1$d</string>
+
+    <!-- Battle -->
+    <string name="battle_title">نبرد</string>
+    <string name="online_battle">نبرد آنلاین</string>
+    <string name="find_match">جستجوی بازی</string>
+    <string name="battle_starting">نبرد شروع می‌شود...</string>
+    <string name="your_turn">نوبت شما</string>
+    <string name="opponent_turn">نوبت حریف</string>
+    <string name="increase_power">افزایش قدرت</string>
+    <string name="attack">حمله</string>
+    <string name="use_ability">استفاده از توانایی</string>
+    <string name="power_label">قدرت: %1$d</string>
+    <string name="hp_label">سلامتی: %1$d</string>
+    <string name="xp_label">XP: %1$d</string>
+
+    <!-- Questions -->
+    <string name="question_time">زمان: %1$ds</string>
+    <string name="time_up">زمان تمام شد!</string>
+    <string name="correct_answer">درست! +%1$d قدرت</string>
+    <string name="wrong_answer">جواب غلط!</string>
+
+    <!-- Lifelines -->
+    <string name="lifeline_50_50">۵۰/۵۰</string>
+    <string name="lifeline_skip">رد شدن</string>
+    <string name="lifeline_cost">هزینه: %1$d سکه</string>
+
+    <!-- Battle Result -->
+    <string name="victory">پیروزی!</string>
+    <string name="defeat">شکست</string>
+    <string name="reward_coins">+%1$d سکه</string>
+    <string name="reward_trophies">+%1$d جام</string>
+    <string name="continue_button">ادامه</string>
+    <string name="back_to_home">بازگشت به خانه</string>
+
+    <!-- Lucky Wheel -->
+    <string name="lucky_wheel_title">چرخ شانس</string>
+    <string name="spin_wheel">بچرخان!</string>
+    <string name="spin_cost">هزینه چرخاندن: %1$d سکه</string>
+    <string name="wheel_result">بردید: %1$s</string>
+    <string name="no_spins_left">امروز چرخشی باقی نمانده</string>
+
+    <!-- Shop -->
+    <string name="shop_title">فروشگاه</string>
+    <string name="coin_packs">بسته سکه</string>
+    <string name="animal_upgrades">ارتقاء حیوانات</string>
+    <string name="skins">پوسته‌ها</string>
+    <string name="items">آیتم‌ها</string>
+    <string name="buy">خرید</string>
+    <string name="buy_confirm">خرید %1$s به قیمت %2$d سکه؟</string>
+    <string name="not_enough_coins">سکه کافی نیست!</string>
+    <string name="purchase_success">خرید موفقیت‌آمیز!</string>
+
+    <!-- Map -->
+    <string name="map_title">نقشه</string>
+    <string name="level_node">مرحله %1$d</string>
+    <string name="level_completed">تکمیل شده</string>
+    <string name="level_available">قابل بازی</string>
+    <string name="level_locked">قفل</string>
+    <string name="stage_label">فاز %1$d</string>
+
+    <!-- Recent Battles -->
+    <string name="recent_battles_title">نبردهای اخیر</string>
+    <string name="no_battles">نبرد اخیری وجود ندارد</string>
+    <string name="vs_opponent">در برابر %1$s</string>
+    <string name="battle_win">برد</string>
+    <string name="battle_loss">باخت</string>
+
+    <!-- Settings -->
+    <string name="settings_title">تنظیمات</string>
+    <string name="language">زبان</string>
+    <string name="sound_effects">صداهای بازی</string>
+    <string name="music">موسیقی</string>
+    <string name="notifications">اعلانات</string>
+    <string name="account">حساب کاربری</string>
+    <string name="about">درباره</string>
+    <string name="version">نسخه %1$s</string>
+    <string name="language_english">English</string>
+    <string name="language_persian">فارسی</string>
+    <string name="language_arabic">العربية</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">جدول امتیازات هفتگی</string>
+    <string name="rank_label">#%1$d</string>
+    <string name="your_rank">رتبه شما: %1$d</string>
+
+    <!-- Daily Login -->
+    <string name="daily_login_title">ورود روزانه</string>
+    <string name="day_label">روز %1$d</string>
+    <string name="claimed">دریافت شده</string>
+    <string name="claim_reward">دریافت</string>
+    <string name="streak_bonus">پاداش پیاپی!</string>
+
+    <!-- Chest -->
+    <string name="chest_ready">صندوق آماده!</string>
+    <string name="chest_opening">در حال باز کردن صندوق...</string>
+    <string name="chest_contents">محتویات صندوق</string>
+
+    <!-- Level Up -->
+    <string name="level_up">ارتقاء سطح!</string>
+    <string name="new_level">به سطح %1$d رسیدید!</string>
+
+    <!-- Dialogs -->
+    <string name="quit_confirm">آیا مطمئن هستید که می‌خواهید خارج شوید؟</string>
+    <string name="reset_confirm">بازنشانی تمام پیشرفت؟</string>
+    <string name="yes">بله</string>
+    <string name="no">خیر</string>
+</resources>

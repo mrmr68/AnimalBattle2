@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="cream">#FFF8E7</color>
+    <color name="cream_light">#FFFDF5</color>
+    <color name="gold">#FFD700</color>
+    <color name="gold_dark">#B8860B</color>
+    <color name="gold_light">#FFE44D</color>
+
+    <!-- Dark Green (limited use) -->
+    <color name="dark_green_primary">#114C44</color>
+    <color name="dark_green_detail">#0E3D36</color>
+
+    <!-- UI Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="text_primary">#2D2D2D</color>
+    <color name="text_secondary">#6B6B6B</color>
+    <color name="text_on_gold">#3D2B1F</color>
+
+    <!-- Battle Colors -->
+    <color name="hp_red">#FF4444</color>
+    <color name="hp_green">#44FF44</color>
+    <color name="xp_blue">#4488FF</color>
+    <color name="xp_red">#FF4466</color>
+
+    <!-- Status Colors -->
+    <color name="victory_green">#4CAF50</color>
+    <color name="defeat_red">#F44336</color>
+    <color name="warning_orange">#FF9800</color>
+
+    <!-- Panel Colors -->
+    <color name="panel_background">#FFFAF0</color>
+    <color name="panel_border">#FFE082</color>
+    <color name="panel_shadow">#22000000</color>
+
+    <!-- Semi-transparent -->
+    <color name="overlay_dark">#66000000</color>
+    <color name="overlay_light">#33FFFFFF</color>
+
+    <!-- Material Theme Colors -->
+    <color name="seed">#FFD700</color>
+</resources>
