@@ -42,6 +42,40 @@ enum class AnimalSize {
     LARGE    // For battle
 }
 
+/** Unique attack animation style per animal */
+enum class AttackStyle {
+    ROAR,        // Lion: shake + scale up
+    CLAW,        // Tiger: horizontal swipe
+    DASH,        // Leopard: quick forward dash
+    SPRINT,      // Cheetah: lightning fast
+    SLAM,        // Bear: heavy downward slam
+    HOWL,        // Wolf: upward howl
+    POUND,       // Gorilla: chest pound shake
+    CHARGE,      // Rhino: straight heavy charge
+    STOMP,       // Elephant: downward heavy stomp
+    ROLL,        // Crocodile: spinning death roll
+    DIVE,        // Eagle: dive bomb from above
+    VENOM        // Cobra: quick venom jab
+}
+
+fun getAttackStyle(animalId: String): AttackStyle {
+    return when (animalId) {
+        "lion" -> AttackStyle.ROAR
+        "tiger" -> AttackStyle.CLAW
+        "leopard" -> AttackStyle.DASH
+        "cheetah" -> AttackStyle.SPRINT
+        "bear" -> AttackStyle.SLAM
+        "wolf" -> AttackStyle.HOWL
+        "gorilla" -> AttackStyle.POUND
+        "rhino" -> AttackStyle.CHARGE
+        "elephant" -> AttackStyle.STOMP
+        "crocodile" -> AttackStyle.ROLL
+        "eagle" -> AttackStyle.DIVE
+        "cobra" -> AttackStyle.VENOM
+        else -> AttackStyle.ROAR
+    }
+}
+
 @Composable
 fun AnimatedAnimal(
     animal: Animal,
@@ -71,20 +105,87 @@ fun AnimatedAnimal(
         label = "breathe"
     )
 
-    // Attack lunge — aggressive forward motion then spring back
-    val attackOffset by animateFloatAsState(
-        targetValue = if (isAttacking) 50f else 0f,
-        animationSpec = if (isAttacking) {
-            tween(120, easing = EaseInBack)
-        } else {
-            spring(dampingRatio = 0.4f)
+    // Get animal-specific attack style
+    val attackStyle = remember(animal.id) { getAttackStyle(animal.id) }
+
+    // Attack lunge — animal-specific motion
+    val attackOffsetX by animateFloatAsState(
+        targetValue = when {
+            !isAttacking -> 0f
+            attackStyle == AttackStyle.DIVE -> 0f
+            attackStyle == AttackStyle.STOMP -> 0f
+            attackStyle == AttackStyle.POUND -> 0f
+            attackStyle == AttackStyle.SLAM -> 0f
+            attackStyle == AttackStyle.SPRINT -> 70f
+            attackStyle == AttackStyle.DASH -> 55f
+            attackStyle == AttackStyle.CHARGE -> 65f
+            attackStyle == AttackStyle.CLAW -> 40f
+            attackStyle == AttackStyle.VENOM -> 30f
+            else -> 50f // ROAR, HOWL, ROLL
         },
-        label = "attack_lunge"
+        animationSpec = when {
+            !isAttacking -> spring(dampingRatio = 0.4f)
+            attackStyle == AttackStyle.SPRINT -> tween(80, easing = EaseInBack)
+            attackStyle == AttackStyle.DASH -> tween(100, easing = EaseInBack)
+            attackStyle == AttackStyle.CLAW -> tween(150, easing = EaseInBack)
+            attackStyle == AttackStyle.VENOM -> tween(100, easing = EaseInBack)
+            else -> tween(140, easing = EaseInBack)
+        },
+        label = "attack_lunge_x"
     )
 
-    // Attack scale — punch effect on hit
+    // Vertical attack offset for dive/stomp/slam
+    val attackOffsetY by animateFloatAsState(
+        targetValue = when {
+            !isAttacking -> 0f
+            attackStyle == AttackStyle.DIVE -> 60f
+            attackStyle == AttackStyle.STOMP -> -40f
+            attackStyle == AttackStyle.SLAM -> -30f
+            attackStyle == AttackStyle.HOWL -> -20f
+            attackStyle == AttackStyle.POUND -> 15f
+            else -> 0f
+        },
+        animationSpec = when {
+            !isAttacking -> spring(dampingRatio = 0.4f)
+            attackStyle == AttackStyle.DIVE -> tween(200, easing = EaseInBack)
+            attackStyle == AttackStyle.STOMP -> tween(150)
+            attackStyle == AttackStyle.SLAM -> tween(150)
+            else -> spring()
+        },
+        label = "attack_lunge_y"
+    )
+
+    // Attack rotation for ROLL
+    val attackRotation by animateFloatAsState(
+        targetValue = when {
+            !isAttacking -> 0f
+            attackStyle == AttackStyle.ROLL -> 360f
+            attackStyle == AttackStyle.POUND -> -8f
+            attackStyle == AttackStyle.ROAR -> 5f
+            else -> 0f
+        },
+        animationSpec = when {
+            !isAttacking -> spring()
+            attackStyle == AttackStyle.ROLL -> tween(400)
+            attackStyle == AttackStyle.POUND -> tween(100, repeatMode = RepeatMode.Reverse)
+            attackStyle == AttackStyle.ROAR -> tween(200, repeatMode = RepeatMode.Reverse)
+            else -> spring()
+        },
+        label = "attack_rotation"
+    )
+
+    // Attack scale — animal-specific
     val attackScale by animateFloatAsState(
-        targetValue = if (isAttacking) 1.2f else 1f,
+        targetValue = when {
+            !isAttacking -> 1f
+            attackStyle == AttackStyle.SLAM -> 1.1f
+            attackStyle == AttackStyle.STOMP -> 1.15f
+            attackStyle == AttackStyle.POUND -> 1.12f
+            attackStyle == AttackStyle.CHARGE -> 1.2f
+            attackStyle == AttackStyle.ROAR -> 1.18f
+            attackStyle == AttackStyle.HOWL -> 1.1f
+            else -> 1.15f
+        },
         animationSpec = if (isAttacking) {
             tween(120)
         } else {
@@ -214,8 +315,9 @@ fun AnimatedAnimal(
                 .size(sizeDp)
                 .alpha(damageAlpha)
                 .graphicsLayer {
-                    translationX = attackOffset + shakeOffset + recoilOffset
-                    translationY = idleOffset
+                    translationX = attackOffsetX + shakeOffset + recoilOffset
+                    translationY = attackOffsetY + idleOffset
+                    rotationZ = attackRotation
                     scaleX = attackScale * breatheScale
                     scaleY = attackScale * breatheScale
                 }
