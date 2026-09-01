@@ -88,6 +88,7 @@ fun AnimatedAnimal(
     isAttacking: Boolean = false,
     isTakingDamage: Boolean = false,
     powerLevel: Int = 1,
+    abilityIndex: Int = 0,
     modifier: Modifier = Modifier
 ) {
     val sizeDp = when (size) {
@@ -313,9 +314,9 @@ fun AnimatedAnimal(
         }
 
         // Check for Lottie animation
-        val lottieRes = remember(animal.id) { getAnimalAttackAnimation(animal.id) }
+        val lottieRes = remember(animal.id, abilityIndex) { getAnimalAttackAnimation(animal.id, abilityIndex) }
         val composition by rememberLottieComposition(
-            LottieCompositionSpec.RawRes(lottieRes ?: R.raw.lion_attack)
+            LottieCompositionSpec.RawRes(lottieRes ?: R.raw.lion_claw)
         )
         val lottieProgress by animateLottieCompositionAsState(
             composition,
@@ -392,14 +393,133 @@ fun getAnimalDrawable(animalId: String): Int {
  * Get Lottie animation resource for animal attack.
  * Returns null if no Lottie animation is available.
  */
-fun getAnimalAttackAnimation(animalId: String): Int? {
-    return when (animalId) {
-        "lion" -> R.raw.lion_attack
-        "tiger" -> R.raw.tiger_attack
-        "eagle" -> R.raw.eagle_attack
-        "cobra" -> R.raw.cobra_attack
-        else -> null // Use fallback CSS-like animation
+fun getAnimalAttackAnimation(animalId: String, abilityIndex: Int = 0): Int? {
+    val abilityName = when (abilityIndex) {
+        0 -> when (animalId) {
+            "lion" -> "claw"
+            "tiger" -> "strike"
+            "leopard" -> "swipe"
+            "cheetah" -> "scratch"
+            "bear" -> "swipe"
+            "wolf" -> "bite"
+            "gorilla" -> "punch"
+            "rhino" -> "gore"
+            "elephant" -> "trunk"
+            "crocodile" -> "bite"
+            "eagle" -> "talon"
+            "cobra" -> "spit"
+            else -> "claw"
+        }
+        1 -> when (animalId) {
+            "lion" -> "roar"
+            "tiger" -> "pounce"
+            "leopard" -> "dash"
+            "cheetah" -> "sprint"
+            "bear" -> "maul"
+            "wolf" -> "howl"
+            "gorilla" -> "slam"
+            "rhino" -> "charge"
+            "elephant" -> "stomp"
+            "crocodile" -> "roll"
+            "eagle" -> "dive"
+            "cobra" -> "constrict"
+            else -> "roar"
+        }
+        2 -> when (animalId) {
+            "lion" -> "fury"
+            "tiger" -> "fang"
+            "leopard" -> "ambush"
+            "cheetah" -> "blitz"
+            "bear" -> "crush"
+            "wolf" -> "pack"
+            "gorilla" -> "rage"
+            "rhino" -> "rampage"
+            "elephant" -> "tusks"
+            "crocodile" -> "lurk"
+            "eagle" -> "storm"
+            "cobra" -> "venom"
+            else -> "fury"
+        }
+        else -> "claw"
     }
+    
+    val resId = when (animalId) {
+        "lion" -> when (abilityName) {
+            "claw" -> R.raw.lion_claw
+            "roar" -> R.raw.lion_roar
+            "fury" -> R.raw.lion_fury
+            else -> null
+        }
+        "tiger" -> when (abilityName) {
+            "strike" -> R.raw.tiger_strike
+            "pounce" -> R.raw.tiger_pounce
+            "fang" -> R.raw.tiger_fang
+            else -> null
+        }
+        "leopard" -> when (abilityName) {
+            "swipe" -> R.raw.leopard_swipe
+            "dash" -> R.raw.leopard_dash
+            "ambush" -> R.raw.leopard_ambush
+            else -> null
+        }
+        "cheetah" -> when (abilityName) {
+            "scratch" -> R.raw.cheetah_scratch
+            "sprint" -> R.raw.cheetah_sprint
+            "blitz" -> R.raw.cheetah_blitz
+            else -> null
+        }
+        "bear" -> when (abilityName) {
+            "swipe" -> R.raw.bear_swipe
+            "maul" -> R.raw.bear_maul
+            "crush" -> R.raw.bear_crush
+            else -> null
+        }
+        "wolf" -> when (abilityName) {
+            "bite" -> R.raw.wolf_bite
+            "howl" -> R.raw.wolf_howl
+            "pack" -> R.raw.wolf_pack
+            else -> null
+        }
+        "gorilla" -> when (abilityName) {
+            "punch" -> R.raw.gorilla_punch
+            "slam" -> R.raw.gorilla_slam
+            "rage" -> R.raw.gorilla_rage
+            else -> null
+        }
+        "rhino" -> when (abilityName) {
+            "gore" -> R.raw.rhino_gore
+            "charge" -> R.raw.rhino_charge
+            "rampage" -> R.raw.rhino_rampage
+            else -> null
+        }
+        "elephant" -> when (abilityName) {
+            "trunk" -> R.raw.elephant_trunk
+            "stomp" -> R.raw.elephant_stomp
+            "tusks" -> R.raw.elephant_tusks
+            else -> null
+        }
+        "crocodile" -> when (abilityName) {
+            "bite" -> R.raw.crocodile_bite
+            "roll" -> R.raw.crocodile_roll
+            "lurk" -> R.raw.crocodile_lurk
+            else -> null
+        }
+        "eagle" -> when (abilityName) {
+            "talon" -> R.raw.eagle_talon
+            "dive" -> R.raw.eagle_dive
+            "storm" -> R.raw.eagle_storm
+            else -> null
+        }
+        "cobra" -> when (abilityName) {
+            "spit" -> R.raw.cobra_spit
+            "constrict" -> R.raw.cobra_constrict
+            "venom" -> R.raw.cobra_venom
+            else -> null
+        }
+        else -> null
+    }
+    
+    return resId
 }
 
 @Composable
