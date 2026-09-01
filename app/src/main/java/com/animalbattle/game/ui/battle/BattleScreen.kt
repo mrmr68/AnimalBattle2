@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +48,11 @@ import com.animalbattle.game.ui.components.GameButton
 import com.animalbattle.game.ui.components.GamePanel
 import com.animalbattle.game.ui.components.HealthBar
 import com.animalbattle.game.ui.components.PowerIndicator
+import com.animalbattle.game.ui.components.FloatingDamageNumber
+import com.animalbattle.game.ui.components.ScreenFlash
 import com.animalbattle.game.ui.theme.Cream
+import com.animalbattle.game.ui.theme.VictoryGreen
+import kotlinx.coroutines.delay
 import com.animalbattle.game.ui.theme.DarkGreenPrimary
 import com.animalbattle.game.ui.theme.DefeatRed
 import com.animalbattle.game.ui.theme.Gold
@@ -137,7 +142,50 @@ private fun BattleArena(
 ) {
     var isPlayerAttacking by remember { mutableStateOf(false) }
     var isOpponentTakingDamage by remember { mutableStateOf(false) }
+    var isOpponentAttacking by remember { mutableStateOf(false) }
+    var isPlayerTakingDamage by remember { mutableStateOf(false) }
+    var showPlayerFlash by remember { mutableStateOf(false) }
+    var showOpponentFlash by remember { mutableStateOf(false) }
+    var showSlash by remember { mutableStateOf(false) }
+    var slashIsPlayer by remember { mutableStateOf(true) }
+    var lastDamage by remember { mutableStateOf(0) }
+    var showDamageOnOpponent by remember { mutableStateOf(false) }
+    var showDamageOnPlayer by remember { mutableStateOf(false) }
 
+    // Trigger opponent attack animation when it's opponent's turn
+    LaunchedEffect(state.battlePhase) {
+        if (state.battlePhase == BattlePhase.OPPONENT_TURN) {
+            isOpponentAttacking = true
+            showSlash = true
+            slashIsPlayer = false
+            delay(400)
+            isPlayerTakingDamage = true
+            showPlayerFlash = true
+            showDamageOnPlayer = true
+            lastDamage = state.opponentPower
+            delay(800)
+            isOpponentAttacking = false
+            isPlayerTakingDamage = false
+            showPlayerFlash = false
+            showDamageOnPlayer = false
+        }
+    }
+
+    // Reset attack states when returning to player turn
+    LaunchedEffect(state.isPlayerTurn) {
+        if (state.isPlayerTurn) {
+            isPlayerAttacking = false
+            isOpponentTakingDamage = false
+            isOpponentAttacking = false
+            isPlayerTakingDamage = false
+        }
+    }
+
+    // Screen flash effects
+    ScreenFlash(trigger = showPlayerFlash, color = DefeatRed, intensity = 0.25f)
+    ScreenFlash(trigger = showOpponentFlash, color = VictoryGreen, intensity = 0.2f)
+
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -197,13 +245,23 @@ private fun BattleArena(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Animated Animal
-                    AnimatedAnimal(
-                        animal = state.playerAnimal,
-                        size = AnimalSize.LARGE,
-                        isAttacking = isPlayerAttacking,
-                        powerLevel = state.playerPower
-                    )
+                    // Animated Animal with attack effects
+                    Box(contentAlignment = Alignment.Center) {
+                        AnimatedAnimal(
+                            animal = state.playerAnimal,
+                            size = AnimalSize.LARGE,
+                            isAttacking = isPlayerAttacking,
+                            isTakingDamage = isPlayerTakingDamage,
+                            powerLevel = state.playerPower
+                        )
+                        // Floating damage on player when hit
+                        if (showDamageOnPlayer && lastDamage > 0) {
+                            FloatingDamageNumber(
+                                damage = lastDamage,
+                                modifier = Modifier.offset(y = (-80).dp)
+                            )
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -273,13 +331,23 @@ private fun BattleArena(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Animated Animal with damage effect
-                    AnimatedAnimal(
-                        animal = state.opponentAnimal,
-                        size = AnimalSize.LARGE,
-                        isTakingDamage = isOpponentTakingDamage,
-                        powerLevel = state.opponentPower
-                    )
+                    // Animated Animal with attack/damage effects
+                    Box(contentAlignment = Alignment.Center) {
+                        AnimatedAnimal(
+                            animal = state.opponentAnimal,
+                            size = AnimalSize.LARGE,
+                            isAttacking = isOpponentAttacking,
+                            isTakingDamage = isOpponentTakingDamage,
+                            powerLevel = state.opponentPower
+                        )
+                        // Floating damage on opponent when hit
+                        if (showDamageOnOpponent && lastDamage > 0) {
+                            FloatingDamageNumber(
+                                damage = lastDamage,
+                                modifier = Modifier.offset(y = (-80).dp)
+                            )
+                        }
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -363,6 +431,11 @@ private fun BattleArena(
                     onClick = {
                         isPlayerAttacking = true
                         isOpponentTakingDamage = true
+                        showSlash = true
+                        slashIsPlayer = true
+                        showOpponentFlash = true
+                        lastDamage = state.playerPower
+                        showDamageOnOpponent = true
                         onAttack()
                     },
                     enabled = state.playerPower >= GameConfig.POWER_ATTACK_COST,
@@ -392,6 +465,11 @@ private fun BattleArena(
                         onClick = {
                             isPlayerAttacking = true
                             isOpponentTakingDamage = true
+                            showSlash = true
+                            slashIsPlayer = true
+                            showOpponentFlash = true
+                            lastDamage = ability.damage
+                            showDamageOnOpponent = true
                             onUseAbility(index)
                         },
                         enabled = canUse,
@@ -413,6 +491,7 @@ private fun BattleArena(
             }
         }
     }
+    } // Close wrapper Box
 }
 
 @Composable

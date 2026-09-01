@@ -1,18 +1,21 @@
 package com.animalbattle.game.ui.components
 
+import androidx.compose.animation.core.EaseInBack
+import androidx.compose.animation.core.EaseOutBack
+import androidx.compose.animation.core.EaseOutQuad
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -30,7 +34,7 @@ import com.animalbattle.game.R
 import com.animalbattle.game.domain.model.Animal
 import com.animalbattle.game.ui.theme.Gold
 import com.animalbattle.game.ui.theme.HpRed
-import com.animalbattle.game.ui.theme.XpBlue
+import kotlin.math.sin
 
 enum class AnimalSize {
     SMALL,   // For thumbnails
@@ -59,47 +63,146 @@ fun AnimatedAnimal(
     val infiniteTransition = rememberInfiniteTransition(label = "animal_breathe")
     val breatheScale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.05f,
+        targetValue = 1.04f,
         animationSpec = infiniteRepeatable(
-            animation = tween(1500, easing = LinearEasing),
+            animation = tween(1800, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "breathe"
     )
 
-    // Attack animation
+    // Attack lunge — aggressive forward motion then spring back
     val attackOffset by animateFloatAsState(
-        targetValue = if (isAttacking) 20f else 0f,
-        animationSpec = tween(200),
-        label = "attack_offset"
+        targetValue = if (isAttacking) 50f else 0f,
+        animationSpec = if (isAttacking) {
+            tween(120, easing = EaseInBack)
+        } else {
+            spring(dampingRatio = 0.4f)
+        },
+        label = "attack_lunge"
     )
 
-    // Damage flash
+    // Attack scale — punch effect on hit
+    val attackScale by animateFloatAsState(
+        targetValue = if (isAttacking) 1.2f else 1f,
+        animationSpec = if (isAttacking) {
+            tween(120)
+        } else {
+            spring(dampingRatio = 0.5f)
+        },
+        label = "attack_scale"
+    )
+
+    // Damage shake — multi-frame horizontal jitter
+    val shakeOffset by animateFloatAsState(
+        targetValue = if (isTakingDamage) 15f else 0f,
+        animationSpec = if (isTakingDamage) {
+            tween(50, repeatMode = RepeatMode.Reverse)
+        } else {
+            tween(150)
+        },
+        label = "damage_shake"
+    )
+
+    // Damage flash — white flash on hit
     val damageAlpha by animateFloatAsState(
-        targetValue = if (isTakingDamage) 0.5f else 1f,
-        animationSpec = tween(100, repeatMode = RepeatMode.Reverse),
+        targetValue = if (isTakingDamage) 0.3f else 1f,
+        animationSpec = if (isTakingDamage) {
+            tween(60, repeatMode = RepeatMode.Reverse)
+        } else {
+            tween(200)
+        },
         label = "damage_flash"
     )
 
-    // Power glow intensity
+    // Recoil — pushes back hard when hit
+    val recoilOffset by animateFloatAsState(
+        targetValue = if (isTakingDamage) -25f else 0f,
+        animationSpec = if (isTakingDamage) {
+            tween(100, easing = EaseOutBack)
+        } else {
+            spring(dampingRatio = 0.5f)
+        },
+        label = "recoil"
+    )
+
+    // Idle bob — gentle floating motion
+    val idleOffset by infiniteTransition.animateFloat(
+        initialValue = -4f,
+        targetValue = 4f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2200, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "idle_bob"
+    )
+
+    // Power glow pulsing
+    val glowPulse by infiniteTransition.animateFloat(
+        initialValue = 0.4f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "glow_pulse"
+    )
+
     val glowIntensity = (powerLevel / 10f).coerceIn(0.1f, 1f)
 
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        // Power glow effect
+        // Power glow effect with pulsing
         if (powerLevel > 3) {
             Canvas(
                 modifier = Modifier
-                    .size(sizeDp + 20.dp)
-                    .alpha(glowIntensity * 0.6f)
+                    .size(sizeDp + 24.dp)
+                    .alpha(glowIntensity * glowPulse * 0.5f)
             ) {
+                val radius = size.width / 2 + 12f
                 drawCircle(
                     color = if (powerLevel > 7) HpRed else Gold,
-                    radius = size.width / 2 + 10f,
-                    style = Stroke(width = 4f)
+                    radius = radius,
+                    style = Stroke(width = 3f)
                 )
+                // Inner glow ring
+                drawCircle(
+                    color = if (powerLevel > 7) HpRed.copy(alpha = 0.3f) else Gold.copy(alpha = 0.3f),
+                    radius = radius * 0.85f,
+                    style = Stroke(width = 2f)
+                )
+            }
+        }
+
+        // Particle sparks during attack
+        if (isAttacking && powerLevel > 2) {
+            val particleTransition = rememberInfiniteTransition(label = "particles")
+            val particlePhase by particleTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(800, easing = LinearEasing)
+                ),
+                label = "particle_phase"
+            )
+            Canvas(
+                modifier = Modifier.size(sizeDp + 30.dp)
+            ) {
+                val cx = size.width / 2
+                val cy = size.height / 2
+                val r = size.width / 2 - 5f
+                for (i in 0..5) {
+                    val angle = Math.toRadians((particlePhase + i * 60.0))
+                    val px = cx + r * sin(angle).toFloat()
+                    val py = cy + r * kotlin.math.cos(angle).toFloat()
+                    drawCircle(
+                        color = if (powerLevel > 7) HpRed else Gold,
+                        radius = 4f,
+                        center = Offset(px, py)
+                    )
+                }
             }
         }
 
@@ -111,7 +214,10 @@ fun AnimatedAnimal(
                 .size(sizeDp)
                 .alpha(damageAlpha)
                 .graphicsLayer {
-                    translationX = if (isAttacking) attackOffset else 0f
+                    translationX = attackOffset + shakeOffset + recoilOffset
+                    translationY = idleOffset
+                    scaleX = attackScale * breatheScale
+                    scaleY = attackScale * breatheScale
                 }
                 .shadow(8.dp, RoundedCornerShape(16.dp))
                 .clip(RoundedCornerShape(16.dp))
@@ -119,6 +225,7 @@ fun AnimatedAnimal(
                     width = 3.dp,
                     color = when {
                         isAttacking -> HpRed
+                        isTakingDamage -> Color(0xFFFF0000)
                         powerLevel > 7 -> Color(0xFFFF6B35)
                         powerLevel > 4 -> Gold
                         else -> Gold.copy(alpha = 0.5f)
