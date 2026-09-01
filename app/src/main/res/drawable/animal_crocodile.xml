@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Crocodile body -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M15,50 C15,44 25,42 40,42 L80,42 C88,42 92,46 92,50 L92,58 C92,62 88,66 80,66 L40,66 C25,66 15,62 15,58Z" />
+    <!-- Crocodile head -->
+    <path
+        android:fillColor="#388E3C"
+        android:pathData="M10,46 C10,42 14,40 20,40 L40,40 L40,62 L20,62 C14,62 10,58 10,54Z" />
+    <!-- Snout -->
+    <path
+        android:fillColor="#43A047"
+        android:pathData="M5,48 C5,46 8,45 12,45 L20,45 L20,57 L12,57 C8,57 5,56 5,54Z" />
+    <!-- Teeth -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,46 L14,49 L16,46 L18,49 L20,46Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,56 L14,53 L16,56 L18,53 L20,56Z" />
+    <!-- Eye -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M18,43 A4,3 0 1,1 26,43 A4,3 0 1,1 18,43Z" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M20,43 A2,2 0 1,1 24,43 A2,2 0 1,1 20,43Z" />
+    <!-- Tail -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M88,48 L100,44 L102,48 L100,52 L88,54Z" />
+    <!-- Back spikes -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M35,42 L38,36 L41,42Z" />
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M50,42 L53,36 L56,42Z" />
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M65,42 L68,36 L71,42Z" />
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M78,42 L81,36 L84,42Z" />
+    <!-- Legs -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M30,66 L28,78 L35,78 L37,66Z" />
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M60,66 L58,78 L65,78 L67,66Z" />
+</vector>

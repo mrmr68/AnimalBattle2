@@ -6,7 +6,7 @@ data class ShopItem(
     val descriptionResId: Int,
     val price: Int,
     val category: ShopCategory,
-    val iconResId: Int,
+    val iconEmoji: String = "📦",
     val isActive: Boolean = true
 )
 

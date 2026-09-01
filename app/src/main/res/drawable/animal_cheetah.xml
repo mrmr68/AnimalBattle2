@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Cheetah Body - Lean and fast -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M100,155 C70,155 50,138 50,120 C50,102 60,92 70,88 L70,83 C70,65 83,50 100,50 C117,50 130,65 130,83 L130,88 C140,92 150,102 150,120 C150,138 130,155 100,155Z"/>
+    <!-- Tear marks (cheetah signature) -->
+    <path
+        android:strokeWidth="3"
+        android:strokeColor="#000000"
+        android:pathData="M92,78 L88,95 M108,78 L112,95"/>
+    <!-- Spots -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M75,100 C75,98 77,96 79,96 C81,96 83,98 83,100 C83,102 81,104 79,104 C77,104 75,102 75,100Z M95,105 C95,103 97,101 99,101 C101,101 103,103 103,105 C103,107 101,109 99,109 C97,109 95,107 95,105Z M115,100 C115,98 117,96 119,96 C121,96 123,98 123,100 C123,102 121,104 119,104 C117,104 115,102 115,100Z M85,115 C85,113 87,111 89,111 C91,111 93,113 93,115 C93,117 91,119 89,119 C87,119 85,117 85,115Z M105,120 C105,118 107,116 109,116 C111,116 113,118 113,120 C113,122 111,124 109,124 C107,124 105,122 105,120Z"/>
+    <!-- Face -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M90,72 C90,64 95,56 100,56 C105,56 110,64 110,72 L110,85 C110,92 105,96 100,96 C95,96 90,92 90,85Z"/>
+    <!-- Eyes - Alert -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M94,72 C94,70 96,68 98,68 C100,68 102,70 102,72 C102,74 100,76 98,76 C96,76 94,74 94,72Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M104,72 C104,70 106,68 108,68 C110,68 112,70 112,72 C112,74 110,76 108,76 C106,76 104,74 104,72Z"/>
+    <!-- Nose -->
+    <path
+        android:fillColor="#E65100"
+        android:pathData="M97,85 L100,82 L103,85 L100,88Z"/>
+</vector>

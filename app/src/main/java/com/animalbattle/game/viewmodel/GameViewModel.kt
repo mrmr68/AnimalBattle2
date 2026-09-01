@@ -3,7 +3,6 @@ package com.animalbattle.game.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.animalbattle.game.R
 import com.animalbattle.game.data.datastore.PlayerDataStore
 import com.animalbattle.game.data.repository.PlayerRepository
 import com.animalbattle.game.data.repository.PlayerRepositoryImpl
@@ -533,13 +532,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val entries = mutableListOf<LeaderboardEntry>()
         val names = listOf("Shadow", "Blaze", "Storm", "Thunder", "Frost", "Phoenix", "Dragon", "Titan", "Viper", "Spike")
 
+        val avatars = listOf("🦁", "🐯", "🦅", "🐺", "🐻", "🐍", "🐘", "🦏", "🐆", "🐊")
+
         names.forEachIndexed { index, name ->
             entries.add(
                 LeaderboardEntry(
                     rank = index + 1,
                     playerName = name,
                     trophies = Random.nextInt(50, 200),
-                    avatarResId = R.drawable.ic_trophy
+                    avatarEmoji = avatars.getOrElse(index) { "👤" }
                 )
             )
         }
@@ -549,7 +550,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 rank = entries.size + 1,
                 playerName = player.name,
                 trophies = player.trophies,
-                avatarResId = R.drawable.ic_trophy,
+                avatarEmoji = "⭐",
                 isPlayer = true
             )
         )

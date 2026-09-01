@@ -3,8 +3,8 @@ package com.animalbattle.game.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Primary Colors
-val Cream = Color(0xFFF8E7)
-val CreamLight = Color(0xFFFDF5)
+val Cream = Color(0xFFF8E7C4)
+val CreamLight = Color(0xFFFDF5E6)
 val Gold = Color(0xFFFFD700)
 val GoldDark = Color(0xFFB8860B)
 val GoldLight = Color(0xFFFFE44D)

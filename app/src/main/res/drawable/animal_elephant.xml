@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Elephant Body - Massive -->
+    <path
+        android:fillColor="#757575"
+        android:pathData="M100,175 C45,175 25,150 25,125 C25,100 40,90 55,85 L55,80 C55,60 75,40 100,40 C125,40 145,60 145,80 L145,85 C160,90 175,100 175,125 C175,150 155,175 100,175Z"/>
+    <!-- Ears - Large and floppy -->
+    <path
+        android:fillColor="#616161"
+        android:pathData="M55,75 C40,65 25,60 15,70 C5,80 10,100 20,110 C30,100 40,90 55,85Z"/>
+    <path
+        android:fillColor="#616161"
+        android:pathData="M145,75 C160,65 175,60 185,70 C195,80 190,100 180,110 C170,100 160,90 145,85Z"/>
+    <!-- Inner ears -->
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M40,80 C30,72 20,68 15,75 C10,82 15,95 22,100 C30,92 35,85 40,80Z"/>
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M160,80 C170,72 180,68 185,75 C190,82 185,95 178,100 C170,92 165,85 160,80Z"/>
+    <!-- Trunk -->
+    <path
+        android:fillColor="#9E9E9E"
+        android:pathData="M95,90 C90,100 85,115 80,130 C75,145 80,155 90,160 C100,165 110,155 105,145 C100,135 105,120 110,110 L115,90Z"/>
+    <!-- Tusks -->
+    <path
+        android:fillColor="#FAFAFA"
+        android:pathData="M85,95 C80,105 75,120 78,135 C80,140 85,145 90,140"/>
+    <path
+        android:fillColor="#FAFAFA"
+        android:pathData="M115,95 C120,105 125,120 122,135 C120,140 115,145 110,140"/>
+    <!-- Eyes - Small and wise -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M85,75 C85,72 88,69 91,69 C94,69 97,72 97,75 C97,78 94,81 91,81 C88,81 85,78 85,75Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M107,75 C107,72 110,69 113,69 C116,69 119,72 119,75 C119,78 116,81 113,81 C110,81 107,78 107,75Z"/>
+</vector>

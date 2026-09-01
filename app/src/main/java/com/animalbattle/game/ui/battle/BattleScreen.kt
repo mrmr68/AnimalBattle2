@@ -18,20 +18,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -39,10 +38,15 @@ import androidx.compose.ui.unit.dp
 import com.animalbattle.game.R
 import com.animalbattle.game.domain.model.BattlePhase
 import com.animalbattle.game.domain.model.BattleResult
+import com.animalbattle.game.domain.model.BattleState
 import com.animalbattle.game.domain.model.GameConfig
+import com.animalbattle.game.ui.components.AnimatedAnimal
+import com.animalbattle.game.ui.components.AnimalSize
 import com.animalbattle.game.ui.components.BackButton
 import com.animalbattle.game.ui.components.GameButton
 import com.animalbattle.game.ui.components.GamePanel
+import com.animalbattle.game.ui.components.HealthBar
+import com.animalbattle.game.ui.components.PowerIndicator
 import com.animalbattle.game.ui.theme.Cream
 import com.animalbattle.game.ui.theme.DarkGreenPrimary
 import com.animalbattle.game.ui.theme.DefeatRed
@@ -109,7 +113,6 @@ fun BattleScreen(
                 }
             }
         } ?: run {
-            // Loading state
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -126,12 +129,15 @@ fun BattleScreen(
 
 @Composable
 private fun BattleArena(
-    state: com.animalbattle.game.domain.model.BattleState,
+    state: BattleState,
     onIncreasePower: () -> Unit,
     onAttack: () -> Unit,
     onUseAbility: (Int) -> Unit,
     onNavigateBack: () -> Unit
 ) {
+    var isPlayerAttacking by remember { mutableStateOf(false) }
+    var isOpponentTakingDamage by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -155,13 +161,13 @@ private fun BattleArena(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Player XP Bar (Vertical)
             Column(
                 modifier = Modifier
-                    .width(40.dp)
-                    .fillMaxWidth()
+                    .width(50.dp)
                     .padding(end = 8.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -171,25 +177,14 @@ private fun BattleArena(
                     style = MaterialTheme.typography.labelSmall,
                     color = XpBlue
                 )
-                Box(
+                PowerIndicator(
+                    power = state.playerXp,
+                    maxPower = 5,
+                    color = XpBlue,
                     modifier = Modifier
                         .width(20.dp)
-                        .weight(1f)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color.LightGray)
-                ) {
-                    val xpProgress = if (state.playerXp > 0) {
-                        (state.playerXp.toFloat() / 5f).coerceIn(0f, 1f)
-                    } else 0f
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxSize(fraction = xpProgress)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(XpBlue)
-                    )
-                }
+                        .height(120.dp)
+                )
             }
 
             // Player Section
@@ -202,17 +197,13 @@ private fun BattleArena(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Animal Display
-                    Box(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Gold.copy(alpha = 0.3f))
-                            .border(2.dp, Gold, RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "🐾", style = MaterialTheme.typography.headlineLarge)
-                    }
+                    // Animated Animal
+                    AnimatedAnimal(
+                        animal = state.playerAnimal,
+                        size = AnimalSize.LARGE,
+                        isAttacking = isPlayerAttacking,
+                        powerLevel = state.playerPower
+                    )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -223,22 +214,30 @@ private fun BattleArena(
                     )
 
                     // HP Bar
-                    HPBar(
+                    HealthBar(
                         currentHp = state.playerHp,
-                        maxHp = state.playerMaxHp,
-                        color = HpGreen
+                        maxHp = state.playerMaxHp
+                    )
+                    Text(
+                        text = "HP: ${state.playerHp}/${state.playerMaxHp}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextPrimary
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    // Power
-                    Text(
-                        text = stringResource(R.string.power_label, state.playerPower),
-                        style = MaterialTheme.typography.titleSmall,
-                        color = GoldDark
-                    )
+                    // Power with visual indicator
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "⚡ ${state.playerPower}",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = GoldDark
+                        )
+                    }
 
-                    // Level
                     Text(
                         text = "Lv.${state.playerLevel}",
                         style = MaterialTheme.typography.bodySmall,
@@ -247,12 +246,14 @@ private fun BattleArena(
                 }
             }
 
-            // VS
+            // VS Badge with animation
             Box(
                 modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(30.dp))
-                    .background(DarkGreenPrimary),
+                    .size(64.dp)
+                    .shadow(8.dp, RoundedCornerShape(32.dp))
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(DarkGreenPrimary)
+                    .border(3.dp, Gold, RoundedCornerShape(32.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -272,16 +273,13 @@ private fun BattleArena(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(DefeatRed.copy(alpha = 0.3f))
-                            .border(2.dp, DefeatRed, RoundedCornerShape(12.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "🐾", style = MaterialTheme.typography.headlineLarge)
-                    }
+                    // Animated Animal with damage effect
+                    AnimatedAnimal(
+                        animal = state.opponentAnimal,
+                        size = AnimalSize.LARGE,
+                        isTakingDamage = isOpponentTakingDamage,
+                        powerLevel = state.opponentPower
+                    )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -291,19 +289,29 @@ private fun BattleArena(
                         color = TextPrimary
                     )
 
-                    HPBar(
+                    // HP Bar
+                    HealthBar(
                         currentHp = state.opponentHp,
-                        maxHp = state.opponentMaxHp,
-                        color = HpRed
+                        maxHp = state.opponentMaxHp
+                    )
+                    Text(
+                        text = "HP: ${state.opponentHp}/${state.opponentMaxHp}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = TextPrimary
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        text = stringResource(R.string.power_label, state.opponentPower),
-                        style = MaterialTheme.typography.titleSmall,
-                        color = DefeatRed
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "⚡ ${state.opponentPower}",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = DefeatRed
+                        )
+                    }
 
                     Text(
                         text = "Lv.${state.opponentLevel}",
@@ -316,8 +324,7 @@ private fun BattleArena(
             // Opponent XP Bar (Vertical)
             Column(
                 modifier = Modifier
-                    .width(40.dp)
-                    .fillMaxWidth()
+                    .width(50.dp)
                     .padding(start = 8.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -327,25 +334,14 @@ private fun BattleArena(
                     style = MaterialTheme.typography.labelSmall,
                     color = XpRed
                 )
-                Box(
+                PowerIndicator(
+                    power = state.opponentXp,
+                    maxPower = 5,
+                    color = XpRed,
                     modifier = Modifier
                         .width(20.dp)
-                        .weight(1f)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(Color.LightGray)
-                ) {
-                    val opponentXpProgress = if (state.opponentXp > 0) {
-                        (state.opponentXp.toFloat() / 5f).coerceIn(0f, 1f)
-                    } else 0f
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxSize(fraction = opponentXpProgress)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(XpRed)
-                    )
-                }
+                        .height(120.dp)
+                )
             }
         }
 
@@ -358,13 +354,17 @@ private fun BattleArena(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 GameButton(
-                    text = stringResource(R.string.increase_power),
+                    text = "⚡ ${stringResource(R.string.increase_power)}",
                     onClick = onIncreasePower,
                     modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                 )
                 GameButton(
-                    text = stringResource(R.string.attack),
-                    onClick = onAttack,
+                    text = "⚔️ ${stringResource(R.string.attack)}",
+                    onClick = {
+                        isPlayerAttacking = true
+                        isOpponentTakingDamage = true
+                        onAttack()
+                    },
                     enabled = state.playerPower >= GameConfig.POWER_ATTACK_COST,
                     backgroundColor = DefeatRed,
                     modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
@@ -373,18 +373,29 @@ private fun BattleArena(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Abilities
+            // Abilities with power visualization
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 state.playerAnimal.abilities.forEachIndexed { index, ability ->
                     val canUse = state.playerXp >= ability.xpCost && state.isPlayerTurn
+                    val powerColor = when (index) {
+                        0 -> Color(0xFF4CAF50) // Green for low power
+                        1 -> Color(0xFFFFC107) // Yellow for medium power
+                        2 -> Color(0xFFF44336) // Red for high power
+                        else -> Color.Gray
+                    }
+
                     GameButton(
-                        text = "${stringResource(ability.nameResId)} (${ability.xpCost} XP)",
-                        onClick = { onUseAbility(index) },
+                        text = "${stringResource(ability.nameResId)}\n${ability.damage} DMG",
+                        onClick = {
+                            isPlayerAttacking = true
+                            isOpponentTakingDamage = true
+                            onUseAbility(index)
+                        },
                         enabled = canUse,
-                        backgroundColor = if (canUse) DarkGreenPrimary else Color.Gray,
+                        backgroundColor = if (canUse) powerColor else Color.Gray,
                         modifier = Modifier.weight(1f).padding(horizontal = 4.dp)
                     )
                 }
@@ -401,38 +412,6 @@ private fun BattleArena(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun HPBar(
-    currentHp: Int,
-    maxHp: Int,
-    color: Color
-) {
-    val progress = if (maxHp > 0) currentHp.toFloat() / maxHp else 0f
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress,
-        animationSpec = tween(500, easing = LinearEasing),
-        label = "hp_progress"
-    )
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = stringResource(R.string.hp_label, currentHp),
-            style = MaterialTheme.typography.labelSmall,
-            color = TextPrimary
-        )
-        LinearProgressIndicator(
-            progress = { animatedProgress },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(12.dp)
-                .clip(RoundedCornerShape(6.dp)),
-            color = color,
-            trackColor = Color.LightGray,
-            strokeHintSize = 12.dp
-        )
     }
 }
 
@@ -461,8 +440,8 @@ private fun BattleResultScreen(
     ) {
         Text(
             text = when (result) {
-                BattleResult.VICTORY -> stringResource(R.string.victory)
-                BattleResult.DEFEAT -> stringResource(R.string.defeat)
+                BattleResult.VICTORY -> "🏆 ${stringResource(R.string.victory)}"
+                BattleResult.DEFEAT -> "💔 ${stringResource(R.string.defeat)}"
                 null -> ""
             },
             style = MaterialTheme.typography.displayLarge,

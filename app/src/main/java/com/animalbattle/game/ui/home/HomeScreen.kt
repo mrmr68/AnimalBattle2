@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -61,7 +62,8 @@ fun HomeScreen(
     onNavigateToRecentBattles: () -> Unit,
     onNavigateToMap: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onNavigateToProfile: () -> Unit
+    onNavigateToProfile: () -> Unit,
+    onNavigateToLeaderboard: () -> Unit
 ) {
     val player by viewModel.player.collectAsState()
     val showDailyLogin by viewModel.showDailyLogin.collectAsState()
@@ -170,9 +172,9 @@ fun HomeScreen(
                 SmallGameButton(
                     title = stringResource(R.string.nav_leaderboard),
                     emoji = "🏆",
-                    onClick = { /* Navigate to leaderboard */ }
-            )
-        }
+                    onClick = onNavigateToLeaderboard
+                )
+            }
     }
 
     // Daily Login Dialog
@@ -221,6 +223,10 @@ private fun HomeGameButton(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
             .shadow(8.dp, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .background(PanelBackground)

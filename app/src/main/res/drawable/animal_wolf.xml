@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Wolf Body - Sleek -->
+    <path
+        android:fillColor="#607D8B"
+        android:pathData="M100,160 C65,160 45,140 45,120 C45,100 55,90 65,85 L65,80 C65,60 80,45 100,45 C120,45 135,60 135,80 L135,85 C145,90 155,100 155,120 C155,140 135,160 100,160Z"/>
+    <!-- Pointed ears -->
+    <path
+        android:fillColor="#607D8B"
+        android:pathData="M72,60 C65,45 58,30 62,18 C66,6 78,12 82,25 C78,38 75,50 72,60Z"/>
+    <path
+        android:fillColor="#607D8B"
+        android:pathData="M128,60 C135,45 142,30 138,18 C134,6 122,12 118,25 C122,38 125,50 128,60Z"/>
+    <!-- Inner ears -->
+    <path
+        android:fillColor="#90A4AE"
+        android:pathData="M74,55 C70,45 66,35 68,25 C70,15 78,18 80,28 C78,38 76,48 74,55Z"/>
+    <path
+        android:fillColor="#90A4AE"
+        android:pathData="M126,55 C130,45 134,35 132,25 C130,15 122,18 120,28 C122,38 124,48 126,55Z"/>
+    <!-- Face - Pointed snout -->
+    <path
+        android:fillColor="#78909C"
+        android:pathData="M88,75 C88,68 94,58 100,58 C106,58 112,68 112,75 L112,88 C112,95 106,100 100,100 C94,100 88,95 88,88Z"/>
+    <!-- Eyes - Intense -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M92,75 C92,72 94,70 96,70 C98,70 100,72 100,75 C100,78 98,80 96,80 C94,80 92,78 92,75Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M95,75 C95,74 96,73 97,73 C98,73 99,74 99,75 C99,76 98,77 97,77 C96,77 95,76 95,75Z"/>
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M104,75 C104,72 106,70 108,70 C110,70 112,72 112,75 C112,78 110,80 108,80 C106,80 104,78 104,75Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M107,75 C107,74 108,73 109,73 C110,73 111,74 111,75 C111,76 110,77 109,77 C108,77 107,76 107,75Z"/>
+    <!-- Nose -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M97,88 L100,85 L103,88 L100,91Z"/>
+</vector>

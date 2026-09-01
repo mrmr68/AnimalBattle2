@@ -4,6 +4,6 @@ data class LeaderboardEntry(
     val rank: Int,
     val playerName: String,
     val trophies: Int,
-    val avatarResId: Int,
+    val avatarEmoji: String = "👤",
     val isPlayer: Boolean = false
 )

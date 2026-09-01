@@ -91,7 +91,7 @@ private fun DailyRewardCard(
     onClaim: () -> Unit
 ) {
     val isClaimed = reward.isClaimed
-    val isAvailable = !isClaimed && reward.day <= (reward.day)
+    val isAvailable = !isClaimed
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

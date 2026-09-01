@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Lion Body -->
+    <path
+        android:fillColor="#D4A574"
+        android:pathData="M100,160 C60,160 40,140 40,120 C40,100 50,90 60,85 L60,80 C60,60 80,40 100,40 C120,40 140,60 140,80 L140,85 C150,90 160,100 160,120 C160,140 140,160 100,160Z"/>
+    <!-- Mane -->
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M100,30 C70,30 50,50 50,80 C50,90 55,95 60,100 C65,80 80,60 100,60 C120,60 135,80 140,100 C145,95 150,90 150,80 C150,50 130,30 100,30Z"/>
+    <!-- Face -->
+    <path
+        android:fillColor="#E8C399"
+        android:pathData="M85,75 C85,65 95,55 100,55 C105,55 115,65 115,75 L115,90 C115,100 105,105 100,105 C95,105 85,100 85,90Z"/>
+    <!-- Eyes -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M90,72 C90,69 93,66 96,66 C99,66 102,69 102,72 C102,75 99,78 96,78 C93,78 90,75 90,72Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M104,72 C104,69 107,66 110,66 C113,66 116,69 116,72 C116,75 113,78 110,78 C107,78 104,75 104,72Z"/>
+    <!-- Nose -->
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M96,85 L100,82 L104,85 L100,88Z"/>
+    <!-- Mouth -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M92,92 Q100,100 108,92"
+        android:strokeWidth="2"
+        android:strokeColor="#8B4513"/>
+    <!-- Ears -->
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M70,55 C65,45 60,35 65,25 C70,15 80,20 85,30 C80,40 75,50 70,55Z"/>
+    <path
+        android:fillColor="#8B4513"
+        android:pathData="M130,55 C135,45 140,35 135,25 C130,15 120,20 115,30 C120,40 125,50 130,55Z"/>
+</vector>

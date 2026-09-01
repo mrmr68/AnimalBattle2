@@ -25,7 +25,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,20 +36,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.animalbattle.game.R
 import com.animalbattle.game.domain.model.AnimalData
+import com.animalbattle.game.ui.components.AnimatedAnimal
+import com.animalbattle.game.ui.components.AnimalSize
 import com.animalbattle.game.ui.components.BackButton
 import com.animalbattle.game.ui.components.GameButton
 import com.animalbattle.game.ui.components.GamePanel
 import com.animalbattle.game.ui.components.TopBar
 import com.animalbattle.game.ui.theme.Cream
+import com.animalbattle.game.ui.theme.DefeatRed
 import com.animalbattle.game.ui.theme.Gold
 import com.animalbattle.game.ui.theme.GoldDark
 import com.animalbattle.game.ui.theme.PanelBackground
-import com.animalbattle.game.ui.theme.TextOnGold
 import com.animalbattle.game.ui.theme.TextPrimary
+import com.animalbattle.game.ui.theme.TextSecondary
+import com.animalbattle.game.ui.theme.VictoryGreen
 import com.animalbattle.game.ui.theme.XpBlue
 import com.animalbattle.game.viewmodel.GameViewModel
 
@@ -101,7 +105,7 @@ fun AnimalsScreen(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            // Selected Animal Display
+            // Selected Animal Display with Animation
             GamePanel(
                 modifier = Modifier
                     .weight(1f)
@@ -111,20 +115,12 @@ fun AnimalsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Animal Image Placeholder
-                    Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Gold.copy(alpha = 0.3f))
-                            .border(2.dp, Gold, RoundedCornerShape(16.dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "🐾",
-                            style = MaterialTheme.typography.displayLarge
-                        )
-                    }
+                    // Animated Animal
+                    AnimatedAnimal(
+                        animal = selectedAnimal,
+                        size = AnimalSize.LARGE,
+                        powerLevel = player.animalUpgrades[selectedAnimal.id] ?: 1
+                    )
 
                     Spacer(modifier = Modifier.height(12.dp))
 
@@ -141,6 +137,31 @@ fun AnimalsScreen(
                             color = GoldDark
                         )
                     }
+
+                    // Power Level Indicator
+                    val currentLevel = player.animalUpgrades[selectedAnimal.id] ?: 1
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        repeat(5) { index ->
+                            Box(
+                                modifier = Modifier
+                                    .size(12.dp)
+                                    .padding(1.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        if (index < currentLevel) Gold else Color.LightGray
+                                    )
+                            )
+                        }
+                        Text(
+                            text = " Power: $currentLevel",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = GoldDark
+                        )
+                    }
                 }
             }
 
@@ -154,9 +175,17 @@ fun AnimalsScreen(
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
-                        text = stringResource(R.string.animal_hp, selectedAnimal.baseHp),
+                        text = "❤️ ${stringResource(R.string.animal_hp, selectedAnimal.baseHp)}",
                         style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary
+                        color = DefeatRed
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "⚔️ Base Power: ${selectedAnimal.basePower}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = GoldDark
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -169,45 +198,78 @@ fun AnimalsScreen(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
+                    // Abilities with power visualization
                     selectedAnimal.abilities.forEachIndexed { index, ability ->
+                        val powerColor = when (index) {
+                            0 -> VictoryGreen  // Low power
+                            1 -> Color(0xFFFFC107)  // Medium power
+                            2 -> DefeatRed  // High power
+                            else -> Color.Gray
+                        }
+
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 4.dp)
-                                .background(Gold.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                                .background(powerColor.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                                .border(1.dp, powerColor.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            // Power indicator
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(powerColor)
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = stringResource(ability.nameResId),
                                     style = MaterialTheme.typography.labelLarge,
-                                    color = TextPrimary
+                                    color = TextPrimary,
+                                    fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = stringResource(R.string.ability_damage, ability.damage),
+                                    text = "Damage: ${ability.damage} | XP: ${ability.xpCost}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = TextSecondary
                                 )
                             }
-                            Text(
-                                text = "${ability.xpCost} XP",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = XpBlue
-                            )
+
+                            // Power bar
+                            Box(
+                                modifier = Modifier
+                                    .width(40.dp)
+                                    .height(8.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(Color.LightGray)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth(fraction = ability.damage / 50f)
+                                        .height(8.dp)
+                                        .clip(RoundedCornerShape(4.dp))
+                                        .background(powerColor)
+                                )
+                            }
                         }
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Upgrade Button
+                    // Upgrade Button with cost
                     val currentLevel = player.animalUpgrades[selectedAnimal.id] ?: 0
                     val upgradeCost = selectedAnimal.upgradeCost * (currentLevel + 1)
 
                     GameButton(
-                        text = stringResource(R.string.upgrade_cost, upgradeCost),
+                        text = "⬆️ ${stringResource(R.string.upgrade_cost, upgradeCost)}",
                         onClick = { viewModel.upgradeAnimal(selectedAnimal.id) },
                         enabled = player.coins >= upgradeCost,
+                        backgroundColor = if (player.coins >= upgradeCost) Gold else Color.Gray,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -216,7 +278,7 @@ fun AnimalsScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Animal Thumbnails
+        // Animal Thumbnails with selection indicator
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -233,7 +295,7 @@ fun AnimalsScreen(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .size(72.dp)
+                        .size(80.dp)
                         .shadow(4.dp, RoundedCornerShape(12.dp))
                         .clip(RoundedCornerShape(12.dp))
                         .background(if (isSelected) Gold.copy(alpha = 0.3f) else PanelBackground)
@@ -248,22 +310,32 @@ fun AnimalsScreen(
                         .padding(8.dp)
                 ) {
                     if (isUnlocked) {
-                        Text(
-                            text = "🐾",
-                            style = MaterialTheme.typography.titleLarge
+                        // Mini animal icon
+                        AnimatedAnimal(
+                            animal = animal,
+                            size = AnimalSize.SMALL,
+                            powerLevel = player.animalUpgrades[animal.id] ?: 1
                         )
                     } else {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = stringResource(R.string.animal_locked),
-                            tint = GoldDark,
-                            modifier = Modifier.size(24.dp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .clip(CircleShape)
+                                .background(Color.LightGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = stringResource(R.string.animal_locked),
+                                tint = GoldDark,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
                     }
                     Text(
                         text = stringResource(animal.nameResId),
                         style = MaterialTheme.typography.labelSmall,
-                        color = TextPrimary,
+                        color = if (isUnlocked) TextPrimary else TextSecondary,
                         maxLines = 1
                     )
                 }
@@ -271,5 +343,3 @@ fun AnimalsScreen(
         }
     }
 }
-
-private val TextSecondary = Color(0xFF6B6B6B)

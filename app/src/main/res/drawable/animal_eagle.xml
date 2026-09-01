@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Eagle Body -->
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M100,150 C70,150 55,135 55,120 C55,105 65,95 75,90 L75,85 C75,70 85,55 100,55 C115,55 125,70 125,85 L125,90 C135,95 145,105 145,120 C145,135 130,150 100,150Z"/>
+    <!-- Wings -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M55,100 C40,90 25,85 15,90 C25,95 35,100 45,110 L55,100Z"/>
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M145,100 C160,90 175,85 185,90 C175,95 165,100 155,110 L145,100Z"/>
+    <!-- Head - White -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M90,70 C90,60 95,50 100,50 C105,50 110,60 110,70 L110,82 C110,88 105,92 100,92 C95,92 90,88 90,82Z"/>
+    <!-- Eyes - Sharp -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M94,72 C94,70 96,68 98,68 C100,68 102,70 102,72 C102,74 100,76 98,76 C96,76 94,74 94,72Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M97,72 C97,71 98,70 99,70 C100,70 101,71 101,72 C101,73 100,74 99,74 C98,74 97,73 97,72Z"/>
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M102,72 C102,70 104,68 106,68 C108,68 110,70 110,72 C110,74 108,76 106,76 C104,76 102,74 102,72Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M105,72 C105,71 106,70 107,70 C108,70 109,71 109,72 C109,73 108,74 107,74 C106,74 105,73 105,72Z"/>
+    <!-- Beak - Sharp and curved -->
+    <path
+        android:fillColor="#FF8F00"
+        android:pathData="M97,82 L100,78 L103,82 L100,88 L97,82Z"/>
+</vector>

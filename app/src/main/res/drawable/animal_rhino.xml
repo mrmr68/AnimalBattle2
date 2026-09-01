@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Rhino body -->
+    <path
+        android:fillColor="#7A7A7A"
+        android:pathData="M25,50 C25,42 35,38 54,38 C73,38 83,42 83,50 L83,65 C83,70 78,74 70,74 L38,74 C30,74 25,70 25,65Z" />
+    <!-- Rhino head -->
+    <path
+        android:fillColor="#8A8A8A"
+        android:pathData="M20,45 C20,40 25,37 32,37 L38,37 L38,60 L25,60 C22,60 20,57 20,53Z" />
+    <!-- Horn -->
+    <path
+        android:fillColor="#F5F5DC"
+        android:pathData="M28,37 L26,25 L30,25 L32,37Z" />
+    <!-- Eye -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M27,44 A3,3 0 1,1 33,44 A3,3 0 1,1 27,44Z" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M28.5,44 A1.5,1.5 0 1,1 31.5,44 A1.5,1.5 0 1,1 28.5,44Z" />
+    <!-- Legs -->
+    <path
+        android:fillColor="#6A6A6A"
+        android:pathData="M35,74 L35,88 L42,88 L42,74Z" />
+    <path
+        android:fillColor="#6A6A6A"
+        android:pathData="M50,74 L50,88 L57,88 L57,74Z" />
+    <path
+        android:fillColor="#6A6A6A"
+        android:pathData="M65,74 L65,88 L72,88 L72,74Z" />
+    <!-- Ear -->
+    <path
+        android:fillColor="#9A9A9A"
+        android:pathData="M30,37 C28,32 32,30 35,33Z" />
+</vector>

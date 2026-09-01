@@ -131,12 +131,7 @@ private fun ShopItemCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = when (item.category) {
-                        ShopCategory.COIN_PACK -> "🪙"
-                        ShopCategory.ANIMAL_UPGRADE -> "⬆️"
-                        ShopCategory.SKIN -> "🎨"
-                        ShopCategory.ITEM -> "📦"
-                    },
+                    text = item.iconEmoji,
                     style = MaterialTheme.typography.headlineLarge
                 )
             }

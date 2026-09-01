@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Gorilla body -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M54,35 C40,35 30,48 30,60 L30,75 C30,78 32,80 35,80 L73,80 C76,80 78,78 78,75 L78,60 C78,48 68,35 54,35Z" />
+    <!-- Gorilla head -->
+    <path
+        android:fillColor="#444444"
+        android:pathData="M54,25 C44,25 38,33 38,42 C38,48 42,52 48,54 L60,54 C66,52 70,48 70,42 C70,33 64,25 54,25Z" />
+    <!-- Gorilla face -->
+    <path
+        android:fillColor="#666666"
+        android:pathData="M48,38 C48,36 50,34 54,34 C58,34 60,36 60,38 L60,44 C60,46 58,48 54,48 C50,48 48,46 48,44Z" />
+    <!-- Eyes -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M49,37 A2,2 0 1,1 53,37 A2,2 0 1,1 49,37Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M55,37 A2,2 0 1,1 59,37 A2,2 0 1,1 55,37Z" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M50,37.5 A1,1 0 1,1 52,37.5 A1,1 0 1,1 50,37.5Z" />
+    <path
+        android:fillColor="#000000"
+        android:pathData="M56,37.5 A1,1 0 1,1 58,37.5 A1,1 0 1,1 56,37.5Z" />
+    <!-- Arms -->
+    <path
+        android:fillColor="#333333"
+        android:pathData="M30,55 C25,55 22,58 22,62 L22,70 C22,72 24,74 27,74 L30,74Z" />
+    <path
+        android:fillColor="#333333"
+        android:pathData="M78,55 C83,55 86,58 86,62 L86,70 C86,72 84,74 81,74 L78,74Z" />
+</vector>

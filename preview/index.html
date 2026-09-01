@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Battle - Preview</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #FFF8E7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #B8860B;
+            margin: 20px 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .preview-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1200px;
+        }
+
+        .screen {
+            width: 400px;
+            background: #FFFAF0;
+            border-radius: 20px;
+            border: 3px solid #FFD700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background: linear-gradient(135deg, #FFF8E7, #FFFAF0);
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #FFD700;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            background: #FFD700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px solid #B8860B;
+        }
+
+        .player-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-name {
+            font-weight: bold;
+            color: #2D2D2D;
+        }
+
+        .player-level {
+            font-size: 0.85em;
+            color: #B8860B;
+        }
+
+        .xp-bar {
+            width: 100px;
+            height: 6px;
+            background: #ddd;
+            border-radius: 3px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: #4488FF;
+            width: 40%;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stat {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #B8860B;
+        }
+
+        /* Game Buttons Grid */
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .game-btn {
+            background: #FFFAF0;
+            border: 3px solid #FFD700;
+            border-radius: 16px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .game-btn:hover {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .game-btn .emoji {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .game-btn .title {
+            font-size: 0.85em;
+            font-weight: bold;
+            color: #2D2D2D;
+        }
+
+        /* Battle Screen */
+        .battle-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            min-height: 250px;
+            position: relative;
+        }
+
+        .fighter {
+            text-align: center;
+            flex: 1;
+        }
+
+        .fighter-img {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #FFD700, #FFE44D);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            margin: 0 auto 10px;
+            border: 2px solid #B8860B;
+        }
+
+        .fighter-name {
+            font-weight: bold;
+            color: #2D2D2D;
+            margin-bottom: 8px;
+        }
+
+        .hp-bar {
+            width: 100%;
+            height: 12px;
+            background: #ddd;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 4px 0;
+        }
+
+        .hp-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s;
+        }
+
+        .hp-green { background: linear-gradient(90deg, #44FF44, #22CC22); }
+        .hp-red { background: linear-gradient(90deg, #FF4444, #CC2222); }
+
+        .vs-badge {
+            width: 60px;
+            height: 60px;
+            background: #114C44;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .btn-power {
+            background: linear-gradient(135deg, #FFD700, #FFE44D);
+            color: #3D2B1F;
+            border: 2px solid #B8860B;
+        }
+
+        .btn-attack {
+            background: linear-gradient(135deg, #FF4444, #CC2222);
+            color: white;
+            border: 2px solid #AA1111;
+        }
+
+        .btn-ability {
+            background: linear-gradient(135deg, #114C44, #0E3D36);
+            color: white;
+            border: 2px solid #0A2E28;
+        }
+
+        /* Shop Screen */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .shop-item {
+            background: #FFFAF0;
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .shop-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 8px;
+            border: 2px solid #FFD700;
+        }
+
+        .shop-price {
+            color: #B8860B;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+
+        .buy-btn {
+            background: #FFD700;
+            border: 2px solid #B8860B;
+            border-radius: 8px;
+            padding: 6px 20px;
+            font-weight: bold;
+            color: #3D2B1F;
+            cursor: pointer;
+        }
+
+        .section-title {
+            color: #B8860B;
+            font-size: 1.3em;
+            padding: 16px;
+            text-align: center;
+        }
+
+        /* Lucky Wheel */
+        .wheel-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .wheel {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #FFD700 0deg 45deg,
+                #FF6B35 45deg 90deg,
+                #4CAF50 90deg 135deg,
+                #2196F3 135deg 180deg,
+                #9C27B0 180deg 225deg,
+                #FF5722 225deg 270deg,
+                #00BCD4 270deg 315deg,
+                #E91E63 315deg 360deg
+            );
+            border: 4px solid #B8860B;
+            position: relative;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background: #FFD700;
+            border-radius: 50%;
+            border: 3px solid #B8860B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .spin-btn {
+            background: linear-gradient(135deg, #FFD700, #FFE44D);
+            border: 3px solid #B8860B;
+            border-radius: 16px;
+            padding: 16px 32px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #3D2B1F;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Profile Screen */
+        .profile-card {
+            padding: 24px;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: #FFD700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            margin: 0 auto 16px;
+            border: 4px solid #B8860B;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 16px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: #FFFAF0;
+            border: 2px solid #FFD700;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #B8860B;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #6B6B6B;
+        }
+
+        .screen-label {
+            text-align: center;
+            padding: 8px;
+            background: #114C44;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🦁 Animal Battle - Preview</h1>
+    <p style="color: #6B6B6B; margin-bottom: 30px;">پیش‌نمایش گرافیک بازی | Game Graphics Preview</p>
+    
+    <div class="preview-container">
+        
+        <!-- Home Screen -->
+        <div class="screen">
+            <div class="screen-label">🏠 صفحه اصلی | Home Screen</div>
+            <div class="top-bar">
+                <div class="profile">
+                    <div class="avatar">👤</div>
+                    <div class="player-info">
+                        <div class="player-name">بازیکن</div>
+                        <div class="player-level">سطح ۵</div>
+                        <div class="xp-bar"><div class="xp-fill"></div></div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">🪙 ۱۲۵۰</div>
+                    <div class="stat">🏆 ۴۸</div>
+                </div>
+            </div>
+            <div class="game-buttons">
+                <div class="game-btn"><span class="emoji">⚔️</span><span class="title">نبرد آنلاین</span></div>
+                <div class="game-btn"><span class="emoji">🦁</span><span class="title">حیوانات</span></div>
+                <div class="game-btn"><span class="emoji">🛒</span><span class="title">فروشگاه</span></div>
+                <div class="game-btn"><span class="emoji">🎡</span><span class="title">چرخ شانس</span></div>
+                <div class="game-btn"><span class="emoji">📋</span><span class="title">نبردهای اخیر</span></div>
+                <div class="game-btn"><span class="emoji">🗺️</span><span class="title">نقشه</span></div>
+            </div>
+        </div>
+
+        <!-- Battle Screen -->
+        <div class="screen">
+            <div class="screen-label">⚔️ صفحه نبرد | Battle Screen</div>
+            <div class="battle-field">
+                <div class="fighter">
+                    <div class="fighter-img">🦁</div>
+                    <div class="fighter-name">شیر</div>
+                    <div class="hp-bar"><div class="hp-fill hp-green" style="width: 75%"></div></div>
+                    <div style="font-size: 0.85em; color: #6B6B6B;">قدرت: ۵ | XP: ۳</div>
+                </div>
+                <div class="vs-badge">VS</div>
+                <div class="fighter">
+                    <div class="fighter-img">🐺</div>
+                    <div class="fighter-name">گرگ</div>
+                    <div class="hp-bar"><div class="hp-fill hp-red" style="width: 60%"></div></div>
+                    <div style="font-size: 0.85em; color: #6B6B6B;">قدرت: ۴ | XP: ۲</div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn btn-power">⚡ افزایش قدرت</button>
+                <button class="action-btn btn-attack">⚔️ حمله</button>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn btn-ability">💪 توانایی ۱ (1 XP)</button>
+                <button class="action-btn btn-ability">🔥 توانایی ۲ (2 XP)</button>
+                <button class="action-btn btn-ability">💥 توانایی ۳ (3 XP)</button>
+            </div>
+        </div>
+
+        <!-- Shop Screen -->
+        <div class="screen">
+            <div class="screen-label">🛒 فروشگاه | Shop</div>
+            <div class="top-bar">
+                <div class="stats" style="width: 100%; justify-content: center;">
+                    <div class="stat">🪙 ۱۲۵۰ سکه</div>
+                </div>
+            </div>
+            <div class="section-title">بسته‌های سکه</div>
+            <div class="shop-grid">
+                <div class="shop-item">
+                    <div class="shop-icon">🪙</div>
+                    <div style="font-weight: bold;">بسته کوچک</div>
+                    <div class="shop-price">🪙 ۵۰ سکه</div>
+                    <button class="buy-btn">خرید</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">💰</div>
+                    <div style="font-weight: bold;">بسته متوسط</div>
+                    <div class="shop-price">🪙 ۲۰۰ سکه</div>
+                    <button class="buy-btn">خرید</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">💎</div>
+                    <div style="font-weight: bold;">بسته بزرگ</div>
+                    <div class="shop-price">🪙 ۵۰۰ سکه</div>
+                    <button class="buy-btn">خرید</button>
+                </div>
+                <div class="shop-item">
+                    <div class="shop-icon">🎨</div>
+                    <div style="font-weight: bold;">پوسته طلایی</div>
+                    <div class="shop-price">🪙 ۳۰۰ سکه</div>
+                    <button class="buy-btn">خرید</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lucky Wheel -->
+        <div class="screen">
+            <div class="screen-label">🎡 چرخ شانس | Lucky Wheel</div>
+            <div class="top-bar">
+                <div class="stats" style="width: 100%; justify-content: center;">
+                    <div class="stat">🪙 ۱۲۵۰ سکه</div>
+                    <div class="stat">🎰 ۲ چرخش باقی‌مانده</div>
+                </div>
+            </div>
+            <div class="wheel-container">
+                <div class="wheel">
+                    <div class="wheel-center">🎰</div>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 16px;">
+                <button class="spin-btn">🎯 بچرخان! (۱۰۰ سکه)</button>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div class="screen">
+            <div class="screen-label">👤 پروفایل | Profile</div>
+            <div class="top-bar">
+                <div class="stats" style="width: 100%; justify-content: center;">
+                    <div class="stat">🪙 ۱۲۵۰</div>
+                    <div class="stat">🏆 ۴۸</div>
+                </div>
+            </div>
+            <div class="profile-card">
+                <div class="profile-avatar">👤</div>
+                <div style="font-size: 1.3em; font-weight: bold; color: #2D2D2D;">بازیکن</div>
+                <div style="color: #B8860B; margin: 8px 0;">سطح ۵</div>
+                <div class="xp-bar" style="width: 200px; margin: 0 auto;"><div class="xp-fill"></div></div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-icon">🪙</div>
+                    <div class="stat-value">۱۲۵۰</div>
+                    <div class="stat-label">سکه</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value">۴۸</div>
+                    <div class="stat-label">جام</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animals Screen -->
+        <div class="screen">
+            <div class="screen-label">🦁 حیوانات | Animals</div>
+            <div class="top-bar">
+                <div class="profile">
+                    <div class="avatar">🦁</div>
+                    <div class="player-info">
+                        <div class="player-name">شیر</div>
+                        <div class="player-level">سطح ۳</div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding: 16px;">
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #FFD700, #FFE44D); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin: 0 auto; border: 2px solid #B8860B;">🦁</div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                    <div style="width: 60px; height: 60px; background: rgba(255,215,0,0.3); border: 2px solid #FFD700; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🦁</div>
+                    <div style="width: 60px; height: 60px; background: #FFFAF0; border: 2px solid #ddd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🐺</div>
+                    <div style="width: 60px; height: 60px; background: #FFFAF0; border: 2px solid #ddd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🐻</div>
+                    <div style="width: 60px; height: 60px; background: #FFFAF0; border: 2px solid #ddd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🔒</div>
+                    <div style="width: 60px; height: 60px; background: #FFFAF0; border: 2px solid #ddd; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;">🔒</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="margin-top: 40px; text-align: center; color: #6B6B6B;">
+        <p style="font-size: 1.1em; margin-bottom: 10px;">🎨 گرافیک: کارتونی حرفه‌ای | رنگ‌بندی: کرم + طلایی</p>
+        <p>برای اجرای واقعی بازی، Android Studio را نصب کنید</p>
+    </div>
+</body>
+</html>

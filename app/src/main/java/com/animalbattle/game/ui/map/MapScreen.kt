@@ -1,6 +1,5 @@
 package com.animalbattle.game.ui.map
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -117,16 +116,6 @@ private fun MapLevelNode(
     level: MapLevel,
     onLevelClick: () -> Unit
 ) {
-    val backgroundColor by animateFloatAsState(
-        targetValue = when (level.status) {
-            LevelStatus.COMPLETED -> 1f
-            LevelStatus.AVAILABLE -> 0.8f
-            LevelStatus.LOCKED -> 0.3f
-        },
-        animationSpec = tween(200),
-        label = "level_bg"
-    )
-
     GamePanel(
         modifier = Modifier.fillMaxWidth(),
         backgroundColor = when (level.status) {

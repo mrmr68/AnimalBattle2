@@ -1,5 +1,7 @@
 package com.animalbattle.game.domain.model
 
+import com.animalbattle.game.R
+
 object GameConfig {
     // Battle Configuration
     const val INITIAL_PLAYER_POWER = 3
@@ -35,11 +37,11 @@ object GameConfig {
 
     // Shop Configuration
     val SHOP_ITEMS = listOf(
-        ShopItem("coin_pack_small", R.string.coin_packs, R.string.coin_packs, 50, ShopCategory.COIN_PACK, R.drawable.ic_coin),
-        ShopItem("coin_pack_medium", R.string.coin_packs, R.string.coin_packs, 200, ShopCategory.COIN_PACK, R.drawable.ic_coin),
-        ShopItem("coin_pack_large", R.string.coin_packs, R.string.coin_packs, 500, ShopCategory.COIN_PACK, R.drawable.ic_coin),
-        ShopItem("skin_gold", R.string.skins, R.string.skins, 300, ShopCategory.SKIN, R.drawable.ic_trophy),
-        ShopItem("item_lucky_charm", R.string.items, R.string.items, 150, ShopCategory.ITEM, R.drawable.ic_trophy)
+        ShopItem("coin_pack_small", R.string.coin_packs, R.string.coin_packs, 50, ShopCategory.COIN_PACK, iconEmoji = "🪙"),
+        ShopItem("coin_pack_medium", R.string.coin_packs, R.string.coin_packs, 200, ShopCategory.COIN_PACK, iconEmoji = "🪙"),
+        ShopItem("coin_pack_large", R.string.coin_packs, R.string.coin_packs, 500, ShopCategory.COIN_PACK, iconEmoji = "💰"),
+        ShopItem("skin_gold", R.string.skins, R.string.skins, 300, ShopCategory.SKIN, iconEmoji = "🎨"),
+        ShopItem("item_lucky_charm", R.string.items, R.string.items, 150, ShopCategory.ITEM, iconEmoji = "✨")
     )
 
     // Lucky Wheel Configuration

@@ -35,7 +35,8 @@ fun NavGraph(
                 onNavigateToRecentBattles = { navController.navigate(Screen.RecentBattles.route) },
                 onNavigateToMap = { navController.navigate(Screen.Map.route) },
                 onNavigateToSettings = { navController.navigate(Screen.Settings.route) },
-                onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
+                onNavigateToProfile = { navController.navigate(Screen.Profile.route) },
+                onNavigateToLeaderboard = { navController.navigate(Screen.Leaderboard.route) }
             )
         }
 

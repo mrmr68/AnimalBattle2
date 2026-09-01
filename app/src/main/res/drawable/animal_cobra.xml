@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Cobra Body - Coiled -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M100,170 C70,170 50,150 50,130 C50,110 60,100 70,95 L70,90 C70,75 80,60 100,60 C120,60 130,75 130,90 L130,95 C140,100 150,110 150,130 C150,150 130,170 100,170Z"/>
+    <!-- Hood - Flared -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M65,85 C55,75 50,60 55,45 C60,30 75,35 80,50 C75,60 70,75 65,85Z"/>
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M135,85 C145,75 150,60 145,45 C140,30 125,35 120,50 C125,60 130,75 135,85Z"/>
+    <!-- Head -->
+    <path
+        android:fillColor="#43A047"
+        android:pathData="M90,70 C90,60 95,50 100,50 C105,50 110,60 110,70 L110,82 C110,88 105,92 100,92 C95,92 90,88 90,82Z"/>
+    <!-- Eyes - Menacing -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M94,70 C94,67 97,64 100,64 C103,64 106,67 106,70 C106,73 103,76 100,76 C97,76 94,73 94,70Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M99,70 C99,69 100,68 101,68 C102,68 103,69 103,70 C103,71 102,72 101,72 C100,72 99,71 99,70Z"/>
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M100,70 C100,67 103,64 106,64 C109,64 112,67 112,70 C112,73 109,76 106,76 C103,76 100,73 100,70Z"/>
+    <path
+        android:fillColor="#000000"
+        android:pathData="M105,70 C105,69 106,68 107,68 C108,68 109,69 109,70 C109,71 108,72 107,72 C106,72 105,71 105,70Z"/>
+    <!-- Tongue -->
+    <path
+        android:strokeWidth="2"
+        android:strokeColor="#F44336"
+        android:pathData="M100,88 L100,98 M98,96 L100,98 L102,96"/>
+    <!-- Scale pattern -->
+    <path
+        android:fillColor="#1B5E20"
+        android:pathData="M85,100 L90,95 L95,100 L100,95 L105,100 L110,95 L115,100"
+        android:strokeWidth="1"
+        android:strokeColor="#0D3311"/>
+</vector>
