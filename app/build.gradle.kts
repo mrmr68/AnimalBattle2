@@ -83,6 +83,9 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
+    // Lottie Animations
+    implementation("com.airbnb.android:lottie-compose:6.3.0")
+
     // (Room and Hilt available via GameConfig/DataStore if needed later)
 
     // Debug

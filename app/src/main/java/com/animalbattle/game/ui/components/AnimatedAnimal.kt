@@ -2,7 +2,6 @@ package com.animalbattle.game.ui.components
 
 import androidx.compose.animation.core.EaseInBack
 import androidx.compose.animation.core.EaseOutBack
-import androidx.compose.animation.core.EaseOutQuad
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -30,6 +30,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.animalbattle.game.R
 import com.animalbattle.game.domain.model.Animal
 import com.animalbattle.game.ui.theme.Gold
@@ -307,34 +312,61 @@ fun AnimatedAnimal(
             }
         }
 
-        // Main animal image
-        Image(
-            painter = painterResource(id = drawableRes),
-            contentDescription = animal.nameResId.toString(),
-            modifier = Modifier
-                .size(sizeDp)
-                .alpha(damageAlpha)
-                .graphicsLayer {
-                    translationX = attackOffsetX + shakeOffset + recoilOffset
-                    translationY = attackOffsetY + idleOffset
-                    rotationZ = attackRotation
-                    scaleX = attackScale * breatheScale
-                    scaleY = attackScale * breatheScale
-                }
-                .shadow(8.dp, RoundedCornerShape(16.dp))
-                .clip(RoundedCornerShape(16.dp))
-                .border(
-                    width = 3.dp,
-                    color = when {
-                        isAttacking -> HpRed
-                        isTakingDamage -> Color(0xFFFF0000)
-                        powerLevel > 7 -> Color(0xFFFF6B35)
-                        powerLevel > 4 -> Gold
-                        else -> Gold.copy(alpha = 0.5f)
-                    },
-                    shape = RoundedCornerShape(16.dp)
-                )
+        // Check for Lottie animation
+        val lottieRes = remember(animal.id) { getAnimalAttackAnimation(animal.id) }
+        val composition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(lottieRes ?: R.raw.lion_attack)
         )
+        val lottieProgress by animateLottieCompositionAsState(
+            composition,
+            iterations = if (isAttacking) 1 else 0,
+            speed = 1.5f
+        )
+
+        // Show Lottie when attacking, otherwise show static image
+        if (isAttacking && lottieRes != null && composition != null) {
+            LottieAnimation(
+                composition = composition,
+                progress = { lottieProgress },
+                modifier = Modifier
+                    .size(sizeDp)
+                    .graphicsLayer {
+                        translationX = attackOffsetX + shakeOffset + recoilOffset
+                        translationY = attackOffsetY + idleOffset
+                        scaleX = attackScale
+                        scaleY = attackScale
+                    }
+            )
+        } else {
+            // Main animal image
+            Image(
+                painter = painterResource(id = drawableRes),
+                contentDescription = animal.nameResId.toString(),
+                modifier = Modifier
+                    .size(sizeDp)
+                    .alpha(damageAlpha)
+                    .graphicsLayer {
+                        translationX = attackOffsetX + shakeOffset + recoilOffset
+                        translationY = attackOffsetY + idleOffset
+                        rotationZ = attackRotation
+                        scaleX = attackScale * breatheScale
+                        scaleY = attackScale * breatheScale
+                    }
+                    .shadow(8.dp, RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(
+                        width = 3.dp,
+                        color = when {
+                            isAttacking -> HpRed
+                            isTakingDamage -> Color(0xFFFF0000)
+                            powerLevel > 7 -> Color(0xFFFF6B35)
+                            powerLevel > 4 -> Gold
+                            else -> Gold.copy(alpha = 0.5f)
+                        },
+                        shape = RoundedCornerShape(16.dp)
+                    )
+            )
+        }
     }
 }
 
@@ -353,6 +385,20 @@ fun getAnimalDrawable(animalId: String): Int {
         "rhino" -> R.drawable.animal_elephant
         "crocodile" -> R.drawable.animal_wolf
         else -> R.drawable.animal_lion
+    }
+}
+
+/**
+ * Get Lottie animation resource for animal attack.
+ * Returns null if no Lottie animation is available.
+ */
+fun getAnimalAttackAnimation(animalId: String): Int? {
+    return when (animalId) {
+        "lion" -> R.raw.lion_attack
+        "tiger" -> R.raw.tiger_attack
+        "eagle" -> R.raw.eagle_attack
+        "cobra" -> R.raw.cobra_attack
+        else -> null // Use fallback CSS-like animation
     }
 }
 
