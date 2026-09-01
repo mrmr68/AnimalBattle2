@@ -74,6 +74,7 @@ fun BattleScreen(
     onNavigateBack: () -> Unit
 ) {
     val battleState by viewModel.battleState.collectAsState()
+    val backendConnected by viewModel.backendConnected.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.startBattle()
@@ -84,6 +85,29 @@ fun BattleScreen(
             .fillMaxSize()
             .background(Cream)
     ) {
+        // Backend status indicator (top-right corner)
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(
+                        if (backendConnected) Color(0xFF4CAF50) else Color(0xFFF44336)
+                    )
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = if (backendConnected) stringResource(R.string.backend_online) else stringResource(R.string.backend_offline),
+                style = MaterialTheme.typography.labelSmall,
+                color = Color.White.copy(alpha = 0.7f)
+            )
+        }
+
         battleState?.let { state ->
             when (state.battlePhase) {
                 BattlePhase.BATTLE_OVER -> {

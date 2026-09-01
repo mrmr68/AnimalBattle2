@@ -64,6 +64,7 @@ fun AnimalsScreen(
     onNavigateBack: () -> Unit
 ) {
     val player by viewModel.player.collectAsState()
+    val backendConnected by viewModel.backendConnected.collectAsState()
     val allAnimals = AnimalData.getAllAnimals()
     val selectedAnimal = allAnimals.find { it.id == player.selectedAnimalId } ?: allAnimals.first()
     val selectedIndex = allAnimals.indexOf(selectedAnimal).coerceAtLeast(0)
@@ -95,6 +96,26 @@ fun AnimalsScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = GoldDark
             )
+            Spacer(modifier = Modifier.weight(1f))
+            // Backend status
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (backendConnected) Color(0xFF4CAF50) else Color(0xFFF44336)
+                        )
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = if (backendConnected) stringResource(R.string.backend_online) else stringResource(R.string.backend_offline),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextPrimary.copy(alpha = 0.5f)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
