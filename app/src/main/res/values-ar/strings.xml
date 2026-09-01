@@ -67,10 +67,67 @@
     <string name="animal_eagle">نسر</string>
     <string name="animal_cobra">كوبرا</string>
 
-    <!-- Abilities -->
-    <string name="ability_1">القدرة ١</string>
-    <string name="ability_2">القدرة ٢</string>
-    <string name="ability_3">القدرة ٣</string>
+    <!-- Lion Abilities -->
+    <string name="lion_claw">مخلب</string>
+    <string name="lion_roar">زئير</string>
+    <string name="lion_fury">غضب</string>
+
+    <!-- Tiger Abilities -->
+    <string name="tiger_strike">ضربة</string>
+    <string name="tiger_pounce">قفزة</string>
+    <string name="tiger_fang">ناب</string>
+
+    <!-- Leopard Abilities -->
+    <string name="leopard_swipe">مسحة</string>
+    <string name="leopard_dash">اندفاع</string>
+    <string name="leopard_ambush">كمين</string>
+
+    <!-- Cheetah Abilities -->
+    <string name="cheetah_scratch">خدش</string>
+    <string name="cheetah_sprint">سرعة</string>
+    <string name="cheetah_blitz">هجوم سريع</string>
+
+    <!-- Bear Abilities -->
+    <string name="bear_swipe">مسحة</string>
+    <string name="bear_maul">تمزيق</string>
+    <string name="bear_crush">سحق</string>
+
+    <!-- Wolf Abilities -->
+    <string name="wolf_bite">عضة</string>
+    <string name="wolf_howl">عواء</string>
+    <string name="wolf_pack">قطيع</string>
+
+    <!-- Gorilla Abilities -->
+    <string name="gorilla_punch">لكمة</string>
+    <string name="gorilla_slam">ضربة قوية</string>
+    <string name="gorilla_rage">غضب</string>
+
+    <!-- Rhino Abilities -->
+    <string name="rhino_gore">قرن</string>
+    <string name="rhino_charge">هجوم</string>
+    <string name="rhino_rampage">هياج</string>
+
+    <!-- Elephant Abilities -->
+    <string name="elephant_trunk">خرطوم</string>
+    <string name="elephant_stomp">دوس</string>
+    <string name="elephant_tusks">أنياب</string>
+
+    <!-- Crocodile Abilities -->
+    <string name="croc_bite">عضة</string>
+    <string name="croc_death_roll">لفة الموت</string>
+    <string name="croc_lurk">كمين</string>
+
+    <!-- Eagle Abilities -->
+    <string name="eagle_talon">مخلب</string>
+    <string name="eagle_dive">غوص</string>
+    <string name="eagle_storm">عاصفة</string>
+
+    <!-- Cobra Abilities -->
+    <string name="cobra_spit">بصق</string>
+    <string name="cobra_constrict">خنق</string>
+    <string name="cobra_venom">سم</string>
+
+    <!-- Ability Info -->
     <string name="ability_damage">الضرر: %1$d</string>
     <string name="ability_xp_cost">تكلفة XP: %1$d</string>
 

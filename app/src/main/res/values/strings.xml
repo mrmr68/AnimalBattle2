@@ -67,10 +67,67 @@
     <string name="animal_eagle">Eagle</string>
     <string name="animal_cobra">Cobra</string>
 
-    <!-- Abilities -->
-    <string name="ability_1">Ability 1</string>
-    <string name="ability_2">Ability 2</string>
-    <string name="ability_3">Ability 3</string>
+    <!-- Lion Abilities -->
+    <string name="lion_claw">Claw</string>
+    <string name="lion_roar">Roar</string>
+    <string name="lion_fury">Fury</string>
+
+    <!-- Tiger Abilities -->
+    <string name="tiger_strike">Strike</string>
+    <string name="tiger_pounce">Pounce</string>
+    <string name="tiger_fang">Fang</string>
+
+    <!-- Leopard Abilities -->
+    <string name="leopard_swipe">Swipe</string>
+    <string name="leopard_dash">Dash</string>
+    <string name="leopard_ambush">Ambush</string>
+
+    <!-- Cheetah Abilities -->
+    <string name="cheetah_scratch">Scratch</string>
+    <string name="cheetah_sprint">Sprint</string>
+    <string name="cheetah_blitz">Blitz</string>
+
+    <!-- Bear Abilities -->
+    <string name="bear_swipe">Swipe</string>
+    <string name="bear_maul">Maul</string>
+    <string name="bear_crush">Crush</string>
+
+    <!-- Wolf Abilities -->
+    <string name="wolf_bite">Bite</string>
+    <string name="wolf_howl">Howl</string>
+    <string name="wolf_pack">Pack</string>
+
+    <!-- Gorilla Abilities -->
+    <string name="gorilla_punch">Punch</string>
+    <string name="gorilla_slam">Slam</string>
+    <string name="gorilla_rage">Rage</string>
+
+    <!-- Rhino Abilities -->
+    <string name="rhino_gore">Gore</string>
+    <string name="rhino_charge">Charge</string>
+    <string name="rhino_rampage">Rampage</string>
+
+    <!-- Elephant Abilities -->
+    <string name="elephant_trunk">Trunk</string>
+    <string name="elephant_stomp">Stomp</string>
+    <string name="elephant_tusks">Tusks</string>
+
+    <!-- Crocodile Abilities -->
+    <string name="croc_bite">Bite</string>
+    <string name="croc_death_roll">Death Roll</string>
+    <string name="croc_lurk">Lurk</string>
+
+    <!-- Eagle Abilities -->
+    <string name="eagle_talon">Talon</string>
+    <string name="eagle_dive">Dive</string>
+    <string name="eagle_storm">Storm</string>
+
+    <!-- Cobra Abilities -->
+    <string name="cobra_spit">Spit</string>
+    <string name="cobra_constrict">Constrict</string>
+    <string name="cobra_venom">Venom</string>
+
+    <!-- Ability Info -->
     <string name="ability_damage">Damage: %1$d</string>
     <string name="ability_xp_cost">XP Cost: %1$d</string>
 

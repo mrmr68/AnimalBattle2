@@ -32,27 +32,9 @@ object AnimalData {
         isUnlockedByDefault = true,
         upgradeCost = 100,
         abilities = listOf(
-            Ability(
-                id = "lion_claw",
-                nameResId = R.string.ability_1,
-                descriptionResId = R.string.ability_1,
-                damage = 10,
-                xpCost = 1
-            ),
-            Ability(
-                id = "lion_roar",
-                nameResId = R.string.ability_2,
-                descriptionResId = R.string.ability_2,
-                damage = 20,
-                xpCost = 2
-            ),
-            Ability(
-                id = "lion_fury",
-                nameResId = R.string.ability_3,
-                descriptionResId = R.string.ability_3,
-                damage = 35,
-                xpCost = 3
-            )
+            Ability("lion_claw", R.string.lion_claw, R.string.lion_claw, 10, 1),
+            Ability("lion_roar", R.string.lion_roar, R.string.lion_roar, 20, 2),
+            Ability("lion_fury", R.string.lion_fury, R.string.lion_fury, 35, 3)
         )
     )
 
@@ -64,9 +46,9 @@ object AnimalData {
         unlockCost = 200,
         upgradeCost = 150,
         abilities = listOf(
-            Ability("tiger_strike", R.string.ability_1, R.string.ability_1, 12, 1),
-            Ability("tiger_pounce", R.string.ability_2, R.string.ability_2, 22, 2),
-            Ability("tiger_fang", R.string.ability_3, R.string.ability_3, 38, 3)
+            Ability("tiger_strike", R.string.tiger_strike, R.string.tiger_strike, 12, 1),
+            Ability("tiger_pounce", R.string.tiger_pounce, R.string.tiger_pounce, 22, 2),
+            Ability("tiger_fang", R.string.tiger_fang, R.string.tiger_fang, 38, 3)
         )
     )
 
@@ -78,9 +60,9 @@ object AnimalData {
         unlockCost = 300,
         upgradeCost = 200,
         abilities = listOf(
-            Ability("leopard_swipe", R.string.ability_1, R.string.ability_1, 14, 1),
-            Ability("leopard_dash", R.string.ability_2, R.string.ability_2, 25, 2),
-            Ability("leopard_ambush", R.string.ability_3, R.string.ability_3, 40, 3)
+            Ability("leopard_swipe", R.string.leopard_swipe, R.string.leopard_swipe, 14, 1),
+            Ability("leopard_dash", R.string.leopard_dash, R.string.leopard_dash, 25, 2),
+            Ability("leopard_ambush", R.string.leopard_ambush, R.string.leopard_ambush, 40, 3)
         )
     )
 
@@ -92,9 +74,9 @@ object AnimalData {
         unlockCost = 400,
         upgradeCost = 250,
         abilities = listOf(
-            Ability("cheetah_scratch", R.string.ability_1, R.string.ability_1, 15, 1),
-            Ability("cheetah_sprint", R.string.ability_2, R.string.ability_2, 28, 2),
-            Ability("cheetah_blitz", R.string.ability_3, R.string.ability_3, 42, 3)
+            Ability("cheetah_scratch", R.string.cheetah_scratch, R.string.cheetah_scratch, 15, 1),
+            Ability("cheetah_sprint", R.string.cheetah_sprint, R.string.cheetah_sprint, 28, 2),
+            Ability("cheetah_blitz", R.string.cheetah_blitz, R.string.cheetah_blitz, 42, 3)
         )
     )
 
@@ -106,9 +88,9 @@ object AnimalData {
         unlockCost = 500,
         upgradeCost = 300,
         abilities = listOf(
-            Ability("bear_swipe", R.string.ability_1, R.string.ability_1, 8, 1),
-            Ability("bear_maul", R.string.ability_2, R.string.ability_2, 18, 2),
-            Ability("bear_crush", R.string.ability_3, R.string.ability_3, 30, 3)
+            Ability("bear_swipe", R.string.bear_swipe, R.string.bear_swipe, 8, 1),
+            Ability("bear_maul", R.string.bear_maul, R.string.bear_maul, 18, 2),
+            Ability("bear_crush", R.string.bear_crush, R.string.bear_crush, 30, 3)
         )
     )
 
@@ -120,9 +102,9 @@ object AnimalData {
         unlockCost = 350,
         upgradeCost = 180,
         abilities = listOf(
-            Ability("wolf_bite", R.string.ability_1, R.string.ability_1, 11, 1),
-            Ability("wolf_howl", R.string.ability_2, R.string.ability_2, 21, 2),
-            Ability("wolf_pack", R.string.ability_3, R.string.ability_3, 36, 3)
+            Ability("wolf_bite", R.string.wolf_bite, R.string.wolf_bite, 11, 1),
+            Ability("wolf_howl", R.string.wolf_howl, R.string.wolf_howl, 21, 2),
+            Ability("wolf_pack", R.string.wolf_pack, R.string.wolf_pack, 36, 3)
         )
     )
 
@@ -134,9 +116,9 @@ object AnimalData {
         unlockCost = 600,
         upgradeCost = 350,
         abilities = listOf(
-            Ability("gorilla_punch", R.string.ability_1, R.string.ability_1, 9, 1),
-            Ability("gorilla_slam", R.string.ability_2, R.string.ability_2, 19, 2),
-            Ability("gorilla_rage", R.string.ability_3, R.string.ability_3, 32, 3)
+            Ability("gorilla_punch", R.string.gorilla_punch, R.string.gorilla_punch, 9, 1),
+            Ability("gorilla_slam", R.string.gorilla_slam, R.string.gorilla_slam, 19, 2),
+            Ability("gorilla_rage", R.string.gorilla_rage, R.string.gorilla_rage, 32, 3)
         )
     )
 
@@ -148,9 +130,9 @@ object AnimalData {
         unlockCost = 700,
         upgradeCost = 400,
         abilities = listOf(
-            Ability("rhino_gore", R.string.ability_1, R.string.ability_1, 7, 1),
-            Ability("rhino_charge", R.string.ability_2, R.string.ability_2, 16, 2),
-            Ability("rhino_rampage", R.string.ability_3, R.string.ability_3, 28, 3)
+            Ability("rhino_gore", R.string.rhino_gore, R.string.rhino_gore, 7, 1),
+            Ability("rhino_charge", R.string.rhino_charge, R.string.rhino_charge, 16, 2),
+            Ability("rhino_rampage", R.string.rhino_rampage, R.string.rhino_rampage, 28, 3)
         )
     )
 
@@ -162,9 +144,9 @@ object AnimalData {
         unlockCost = 800,
         upgradeCost = 450,
         abilities = listOf(
-            Ability("elephant_trunk", R.string.ability_1, R.string.ability_1, 6, 1),
-            Ability("elephant_stomp", R.string.ability_2, R.string.ability_2, 14, 2),
-            Ability("elephant_tusks", R.string.ability_3, R.string.ability_3, 25, 3)
+            Ability("elephant_trunk", R.string.elephant_trunk, R.string.elephant_trunk, 6, 1),
+            Ability("elephant_stomp", R.string.elephant_stomp, R.string.elephant_stomp, 14, 2),
+            Ability("elephant_tusks", R.string.elephant_tusks, R.string.elephant_tusks, 25, 3)
         )
     )
 
@@ -176,9 +158,9 @@ object AnimalData {
         unlockCost = 550,
         upgradeCost = 280,
         abilities = listOf(
-            Ability("croc_bite", R.string.ability_1, R.string.ability_1, 10, 1),
-            Ability("croc_death_roll", R.string.ability_2, R.string.ability_2, 20, 2),
-            Ability("croc_lurk", R.string.ability_3, R.string.ability_3, 34, 3)
+            Ability("croc_bite", R.string.croc_bite, R.string.croc_bite, 10, 1),
+            Ability("croc_death_roll", R.string.croc_death_roll, R.string.croc_death_roll, 20, 2),
+            Ability("croc_lurk", R.string.croc_lurk, R.string.croc_lurk, 34, 3)
         )
     )
 
@@ -190,9 +172,9 @@ object AnimalData {
         unlockCost = 450,
         upgradeCost = 220,
         abilities = listOf(
-            Ability("eagle_talon", R.string.ability_1, R.string.ability_1, 16, 1),
-            Ability("eagle_dive", R.string.ability_2, R.string.ability_2, 30, 2),
-            Ability("eagle_storm", R.string.ability_3, R.string.ability_3, 45, 3)
+            Ability("eagle_talon", R.string.eagle_talon, R.string.eagle_talon, 16, 1),
+            Ability("eagle_dive", R.string.eagle_dive, R.string.eagle_dive, 30, 2),
+            Ability("eagle_storm", R.string.eagle_storm, R.string.eagle_storm, 45, 3)
         )
     )
 
@@ -204,9 +186,9 @@ object AnimalData {
         unlockCost = 380,
         upgradeCost = 200,
         abilities = listOf(
-            Ability("cobra_spit", R.string.ability_1, R.string.ability_1, 13, 1),
-            Ability("cobra_constrict", R.string.ability_2, R.string.ability_2, 24, 2),
-            Ability("cobra_venom", R.string.ability_3, R.string.ability_3, 38, 3)
+            Ability("cobra_spit", R.string.cobra_spit, R.string.cobra_spit, 13, 1),
+            Ability("cobra_constrict", R.string.cobra_constrict, R.string.cobra_constrict, 24, 2),
+            Ability("cobra_venom", R.string.cobra_venom, R.string.cobra_venom, 38, 3)
         )
     )
 }
