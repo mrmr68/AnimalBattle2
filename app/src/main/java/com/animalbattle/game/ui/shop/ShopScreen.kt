@@ -34,6 +34,7 @@ import com.animalbattle.game.R
 import com.animalbattle.game.domain.model.ShopCategory
 import com.animalbattle.game.domain.model.ShopItem
 import com.animalbattle.game.ui.components.BackButton
+import com.animalbattle.game.ui.components.ConnectionStatusIndicator
 import com.animalbattle.game.ui.components.GameButton
 import com.animalbattle.game.ui.components.GamePanel
 import com.animalbattle.game.ui.components.TopBar
@@ -51,6 +52,7 @@ fun ShopScreen(
     onNavigateBack: () -> Unit
 ) {
     val player by viewModel.player.collectAsState()
+    val backendConnected by viewModel.backendConnected.collectAsState()
     val shopItems by viewModel.shopItems.collectAsState()
 
     Column(
@@ -79,6 +81,8 @@ fun ShopScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = GoldDark
             )
+            Spacer(modifier = Modifier.weight(1f))
+            ConnectionStatusIndicator(connected = backendConnected)
         }
 
         Spacer(modifier = Modifier.height(12.dp))

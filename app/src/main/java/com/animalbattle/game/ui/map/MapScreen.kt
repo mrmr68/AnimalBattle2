@@ -40,6 +40,7 @@ import com.animalbattle.game.R
 import com.animalbattle.game.domain.model.LevelStatus
 import com.animalbattle.game.domain.model.MapLevel
 import com.animalbattle.game.ui.components.BackButton
+import com.animalbattle.game.ui.components.ConnectionStatusIndicator
 import com.animalbattle.game.ui.components.GameButton
 import com.animalbattle.game.ui.components.GamePanel
 import com.animalbattle.game.ui.components.TopBar
@@ -61,6 +62,7 @@ fun MapScreen(
     onStartBattle: () -> Unit
 ) {
     val player by viewModel.player.collectAsState()
+    val backendConnected by viewModel.backendConnected.collectAsState()
     val mapLevels by viewModel.mapLevels.collectAsState()
 
     Column(
@@ -89,6 +91,8 @@ fun MapScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = GoldDark
             )
+            Spacer(modifier = Modifier.weight(1f))
+            ConnectionStatusIndicator(connected = backendConnected)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
