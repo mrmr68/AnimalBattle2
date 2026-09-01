@@ -236,4 +236,47 @@
     <string name="reset_confirm">Reset all progress?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <!-- Achievements -->
+    <string name="achievements_title">Achievements</string>
+    <string name="achievement_win_10">Win 10 Battles</string>
+    <string name="achievement_win_10_desc">Win 10 battles to earn rewards</string>
+    <string name="achievement_trophies_50">Collect 50 Trophies</string>
+    <string name="achievement_trophies_50_desc">Reach 50 trophies</string>
+    <string name="achievement_coins_1000">Collect 1000 Coins</string>
+    <string name="achievement_coins_1000_desc">Accumulate 1000 coins</string>
+    <string name="achievement_animals_5">Unlock 5 Animals</string>
+    <string name="achievement_animals_5_desc">Unlock 5 different animals</string>
+    <string name="achievement_streak_5">Win 5 in a Row</string>
+    <string name="achievement_streak_5_desc">Win 5 battles consecutively</string>
+    <string name="achievement_unlocked">Achievement Unlocked!</string>
+    <string name="achievement_claim">Claim Reward</string>
+    <string name="achievement_progress">%1$d / %2$d</string>
+
+    <!-- Daily Challenges -->
+    <string name="challenges_title">Daily Challenges</string>
+    <string name="challenge_win_3">Win 3 Battles</string>
+    <string name="challenge_win_3_desc">Win 3 battles today</string>
+    <string name="challenge_ability_5">Use 5 Abilities</string>
+    <string name="challenge_ability_5_desc">Use abilities 5 times</string>
+    <string name="challenge_coins_200">Collect 200 Coins</string>
+    <string name="challenge_coins_200_desc">Earn 200 coins today</string>
+    <string name="challenge_complete">Challenge Complete!</string>
+    <string name="challenge_claim">Claim Reward</string>
+    <string name="challenge_progress">%1$d / %2$d</string>
+
+    <!-- Random Events -->
+    <string name="event_critical">Critical Hit!</string>
+    <string name="event_dodge">Dodged!</string>
+    <string name="event_power_surge">Power Surge!</string>
+    <string name="event_healing">Healing!</string>
+    <string name="event_coin_bonus">Coin Bonus!</string>
+    <string name="event_xp_bonus">XP Bonus!</string>
+    <string name="event_double_damage">Double Damage!</string>
+    <string name="event_stun">Stunned!</string>
+
+    <!-- Opponent AI -->
+    <string name="opponent_uses_ability">Opponent uses %1$s!</string>
+    <string name="opponent_increases_power">Opponent increases power!</string>
+    <string name="opponent_attacks">Opponent attacks!</string>
 </resources>

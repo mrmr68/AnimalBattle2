@@ -236,4 +236,47 @@
     <string name="reset_confirm">إعادة تعيين كل التقدم؟</string>
     <string name="yes">نعم</string>
     <string name="no">لا</string>
+
+    <!-- Achievements -->
+    <string name="achievements_title">الإنجازات</string>
+    <string name="achievement_win_10">الفوز بـ 10 معارك</string>
+    <string name="achievement_win_10_desc">اربح 10 معارك</string>
+    <string name="achievement_trophies_50">جمع 50 كأس</string>
+    <string name="achievement_trophies_50_desc">بلغ 50 كأس</string>
+    <string name="achievement_coins_1000">جمع 1000 عملة</string>
+    <string name="achievement_coins_1000_desc">اجمع 1000 عملة</string>
+    <string name="achievement_animals_5">فتح 5 حيوانات</string>
+    <string name="achievement_animals_5_desc">افتح 5 حيوانات مختلفة</string>
+    <string name="achievement_streak_5">5 انتصارات متتالية</string>
+    <string name="achievement_streak_5_desc">اربح 5 معارك متتالية</string>
+    <string name="achievement_unlocked">تم فتح الإنجاز!</string>
+    <string name="achievement_claim">استلام المكافأة</string>
+    <string name="achievement_progress">%1$d / %2$d</string>
+
+    <!-- Daily Challenges -->
+    <string name="challenges_title">تحديات يومية</string>
+    <string name="challenge_win_3">الفوز بـ 3 معارك</string>
+    <string name="challenge_win_3_desc">اربح 3 معارك اليوم</string>
+    <string name="challenge_ability_5">استخدام 5 قدرات</string>
+    <string name="challenge_ability_5_desc">استخدم القدرات 5 مرات</string>
+    <string name="challenge_coins_200">جمع 200 عملة</string>
+    <string name="challenge_coins_200_desc">اكسب 200 عملة اليوم</string>
+    <string name="challenge_complete">اكتمل التحدي!</string>
+    <string name="challenge_claim">استلام المكافأة</string>
+    <string name="challenge_progress">%1$d / %2$d</string>
+
+    <!-- Random Events -->
+    <string name="event_critical">ضربة حاسمة!</string>
+    <string name="event_dodge">تجنّب!</string>
+    <string name="event_power_surge">زيادة القوة!</string>
+    <string name="event_healing">علاج!</string>
+    <string name="event_coin_bonus">مكافأة عملات!</string>
+    <string name="event_xp_bonus">مكافأة XP!</string>
+    <string name="event_double_damage">ضربة مضاعفة!</string>
+    <string name="event_stun">صعق!</string>
+
+    <!-- Opponent AI -->
+    <string name="opponent_uses_ability">الخصم يستخدم %1$s!</string>
+    <string name="opponent_increases_power">الخصم يزيد قوته!</string>
+    <string name="opponent_attacks">الخصم يهاجم!</string>
 </resources>

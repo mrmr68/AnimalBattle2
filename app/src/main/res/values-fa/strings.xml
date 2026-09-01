@@ -236,4 +236,47 @@
     <string name="reset_confirm">بازنشانی تمام پیشرفت؟</string>
     <string name="yes">بله</string>
     <string name="no">خیر</string>
+
+    <!-- Achievements -->
+    <string name="achievements_title">دستاورد‌ها</string>
+    <string name="achievement_win_10">برد ۱۰ نبرد</string>
+    <string name="achievement_win_10_desc">۱۰ نبرد برنده شوید</string>
+    <string name="achievement_trophies_50">جمع‌آوری ۵۰ جام</string>
+    <string name="achievement_trophies_50_desc">به ۵۰ جام برسید</string>
+    <string name="achievement_coins_1000">جمع‌آوری ۱۰۰۰ سکه</string>
+    <string name="achievement_coins_1000_desc">۱۰۰۰ سکه جمع کنید</string>
+    <string name="achievement_animals_5">باز کردن ۵ حیوان</string>
+    <string name="achievement_animals_5_desc">۵ حیوان مختلف باز کنید</string>
+    <string name="achievement_streak_5">۵ برد پشت سر هم</string>
+    <string name="achievement_streak_5_desc">۵ نبرد متوالی برنده شوید</string>
+    <string name="achievement_unlocked">دستاورد باز شد!</string>
+    <string name="achievement_claim">دریافت پاداش</string>
+    <string name="achievement_progress">%1$d / %2$d</string>
+
+    <!-- Daily Challenges -->
+    <string name="challenges_title">چالش‌های روزانه</string>
+    <string name="challenge_win_3">برد ۳ نبرد</string>
+    <string name="challenge_win_3_desc">امروز ۳ نبرد برنده شوید</string>
+    <string name="challenge_ability_5">استفاده از ۵ توانایی</string>
+    <string name="challenge_ability_5_desc">۵ بار از توانایی‌ها استفاده کنید</string>
+    <string name="challenge_coins_200">جمع‌آوری ۲۰۰ سکه</string>
+    <string name="challenge_coins_200_desc">امروز ۲۰۰ سکه کسب کنید</string>
+    <string name="challenge_complete">چالش تمام شد!</string>
+    <string name="challenge_claim">دریافت پاداش</string>
+    <string name="challenge_progress">%1$d / %2$d</string>
+
+    <!-- Random Events -->
+    <string name="event_critical">ضربه بحرانی!</string>
+    <string name="event_dodge">اجتناب!</string>
+    <string name="event_power_surge">افزایش قدرت!</string>
+    <string name="event_healing">درمان!</string>
+    <string name="event_coin_bonus">پاداش سکه!</string>
+    <string name="event_xp_bonus">پاداش XP!</string>
+    <string name="event_double_damage">ضربه دوبل!</string>
+    <string name="event_stun">بی‌حرکت!</string>
+
+    <!-- Opponent AI -->
+    <string name="opponent_uses_ability">حریف از %1$s استفاده می‌کند!</string>
+    <string name="opponent_increases_power">حریف قدرتش را افزایش می‌دهد!</string>
+    <string name="opponent_attacks">حریف حمله می‌کند!</string>
 </resources>

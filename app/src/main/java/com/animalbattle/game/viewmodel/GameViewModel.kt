@@ -13,6 +13,7 @@ import com.animalbattle.game.domain.model.BattleResult
 import com.animalbattle.game.domain.model.BattleState
 import com.animalbattle.game.domain.model.DailyLoginReward
 import com.animalbattle.game.domain.model.GameConfig
+import com.animalbattle.game.domain.model.OpponentAI
 import com.animalbattle.game.domain.model.GameSettings
 import com.animalbattle.game.domain.model.LeaderboardEntry
 import com.animalbattle.game.domain.model.LevelStatus
@@ -374,25 +375,62 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private fun opponentTurn() {
         val current = _battleState.value ?: return
 
-        val newPlayerHp = (current.playerHp - current.opponentPower).coerceAtLeast(0)
-        val newOpponentPower = current.opponentPower + 1
-        val newOpponentXp = current.opponentXp + 1
+        // AI decides strategy
+        val (strategy, abilityIndex) = OpponentAI.decide(current)
 
-        _battleState.value = current.copy(
-            playerHp = newPlayerHp,
-            opponentPower = newOpponentPower,
-            opponentXp = newOpponentXp
-        )
+        when (strategy) {
+            OpponentAI.Strategy.ATTACK, OpponentAI.Strategy.USE_ABILITY -> {
+                val damage = OpponentAI.getAttackDamage(current, strategy, abilityIndex)
+                val newPlayerHp = (current.playerHp - damage).coerceAtLeast(0)
+                val newOpponentXp = (current.opponentXp + 1).coerceAtMost(5)
 
-        if (newPlayerHp <= 0) {
-            endBattle(false)
-        } else {
-            viewModelScope.launch {
-                delay(800)
-                _battleState.value = _battleState.value?.copy(
-                    isPlayerTurn = true,
-                    battlePhase = BattlePhase.PLAYER_TURN
+                _battleState.value = current.copy(
+                    playerHp = newPlayerHp,
+                    opponentXp = newOpponentXp
                 )
+
+                if (newPlayerHp <= 0) {
+                    endBattle(false)
+                } else {
+                    viewModelScope.launch {
+                        delay(800)
+                        _battleState.value = _battleState.value?.copy(
+                            isPlayerTurn = true,
+                            battlePhase = BattlePhase.PLAYER_TURN
+                        )
+                    }
+                }
+            }
+            OpponentAI.Strategy.INCREASE_POWER -> {
+                // Opponent answers a question (AI always answers correctly)
+                val newPower = current.opponentPower + GameConfig.CORRECT_ANSWER_POWER_BONUS
+                val newOpponentXp = (current.opponentXp + 1).coerceAtMost(5)
+
+                _battleState.value = current.copy(
+                    opponentPower = newPower,
+                    opponentXp = newOpponentXp
+                )
+
+                viewModelScope.launch {
+                    delay(1000)
+                    _battleState.value = _battleState.value?.copy(
+                        isPlayerTurn = true,
+                        battlePhase = BattlePhase.PLAYER_TURN
+                    )
+                }
+            }
+            OpponentAI.Strategy.DEFENSIVE -> {
+                // Same as attack but with reduced damage
+                val newOpponentXp = (current.opponentXp + 1).coerceAtMost(5)
+                _battleState.value = current.copy(opponentXp = newOpponentXp)
+
+                viewModelScope.launch {
+                    delay(1000)
+                    _battleState.value = _battleState.value?.copy(
+                        isPlayerTurn = true,
+                        battlePhase = BattlePhase.PLAYER_TURN
+                    )
+                }
             }
         }
     }
