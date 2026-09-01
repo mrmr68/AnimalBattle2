@@ -376,12 +376,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
         val newPlayerHp = (current.playerHp - current.opponentPower).coerceAtLeast(0)
         val newOpponentPower = current.opponentPower + 1
-        val newXp = current.playerXp + 1
+        val newOpponentXp = current.opponentXp + 1
 
         _battleState.value = current.copy(
             playerHp = newPlayerHp,
             opponentPower = newOpponentPower,
-            playerXp = newXp
+            opponentXp = newOpponentXp
         )
 
         if (newPlayerHp <= 0) {

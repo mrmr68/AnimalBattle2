@@ -177,33 +177,33 @@ fun HomeScreen(
             }
         }
 
-    // Daily Login Dialog
-    if (showDailyLogin) {
-        Box(
-            modifier = Modifier.fillMaxSize().background(OverlayDark),
-            contentAlignment = Alignment.Center
-        ) {
-            DailyLoginDialog(
-                rewards = dailyRewards,
-                onClaim = { viewModel.claimDailyReward(it) },
-                onDismiss = { viewModel.dismissDailyLogin() }
-            )
+        // Daily Login Dialog
+        if (showDailyLogin) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(OverlayDark),
+                contentAlignment = Alignment.Center
+            ) {
+                DailyLoginDialog(
+                    rewards = dailyRewards,
+                    onClaim = { viewModel.claimDailyReward(it) },
+                    onDismiss = { viewModel.dismissDailyLogin() }
+                )
+            }
         }
-    }
 
-    // Level Up Dialog
-    if (showLevelUp) {
-        Box(
-            modifier = Modifier.fillMaxSize().background(OverlayDark),
-            contentAlignment = Alignment.Center
-        ) {
-            LevelUpDialog(
-                newLevel = newLevel,
-                onDismiss = { viewModel.dismissLevelUp() }
-            )
+        // Level Up Dialog
+        if (showLevelUp) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(OverlayDark),
+                contentAlignment = Alignment.Center
+            ) {
+                LevelUpDialog(
+                    newLevel = newLevel,
+                    onDismiss = { viewModel.dismissLevelUp() }
+                )
+            }
         }
     }
-}
 }
 
 @Composable
