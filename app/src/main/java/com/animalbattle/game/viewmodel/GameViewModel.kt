@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.animalbattle.game.data.datastore.PlayerDataStore
+import com.animalbattle.game.data.remote.GameApiClient
 import com.animalbattle.game.data.repository.PlayerRepository
 import com.animalbattle.game.data.repository.PlayerRepositoryImpl
 import com.animalbattle.game.domain.model.AnimalData
@@ -35,6 +36,7 @@ import kotlin.random.Random
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PlayerRepository
+    private val remoteApi = GameApiClient()
     private val _player = MutableStateFlow(Player())
     val player: StateFlow<Player> = _player.asStateFlow()
 
@@ -93,6 +95,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             _wheelSegments.value = GameConfig.WHEEL_SEGMENTS
             _mapLevels.value = getMapLevelsForPlayer(player)
             _leaderboard.value = generateMockLeaderboard(player)
+            refreshLeaderboard()
             checkDailyLogin(player)
         }
     }
@@ -597,6 +600,22 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // Leaderboard
+
+    /**
+     * Fetch the weekly leaderboard from the backend; falls back to the
+     * local mock when the backend is unreachable or disabled.
+     */
+    fun refreshLeaderboard() {
+        viewModelScope.launch {
+            val remote = runCatching { remoteApi.fetchWeeklyLeaderboard() }.getOrNull()
+            if (!remote.isNullOrEmpty()) {
+                _leaderboard.value = remote
+            } else {
+                _leaderboard.value = generateMockLeaderboard(_player.value)
+            }
+        }
+    }
+
     private fun generateMockLeaderboard(player: Player): List<LeaderboardEntry> {
         val entries = mutableListOf<LeaderboardEntry>()
         val names = listOf("Shadow", "Blaze", "Storm", "Thunder", "Frost", "Phoenix", "Dragon", "Titan", "Viper", "Spike")
