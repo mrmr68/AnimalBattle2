@@ -66,6 +66,7 @@ fun HomeScreen(
     onNavigateToLeaderboard: () -> Unit
 ) {
     val player by viewModel.player.collectAsState()
+    val backendConnected by viewModel.backendConnected.collectAsState()
     val showDailyLogin by viewModel.showDailyLogin.collectAsState()
     val dailyRewards by viewModel.dailyLoginRewards.collectAsState()
     val showLevelUp by viewModel.showLevelUp.collectAsState()
@@ -90,7 +91,29 @@ fun HomeScreen(
                 xpProgress = player.xpToNextLevel().toFloat().let { if (it > 0) player.xpForNextLevel().toFloat() / it else 0f }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // Backend connection status
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(10.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(
+                            if (backendConnected) Color(0xFF4CAF50) else Color(0xFFF44336)
+                        )
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = if (backendConnected) stringResource(R.string.backend_online) else stringResource(R.string.backend_offline),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextPrimary.copy(alpha = 0.6f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             // Game Title
             Text(

@@ -74,6 +74,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val _newLevel = MutableStateFlow(1)
     val newLevel: StateFlow<Int> = _newLevel.asStateFlow()
 
+    private val _backendConnected = MutableStateFlow(false)
+    val backendConnected: StateFlow<Boolean> = _backendConnected.asStateFlow()
+
     init {
         val dataStore = PlayerDataStore(application)
         repository = PlayerRepositoryImpl(dataStore)
@@ -98,7 +101,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             _leaderboard.value = generateMockLeaderboard(player)
             refreshLeaderboard()
             checkDailyLogin(player)
+            checkBackendHealth()
             registerWithBackend(player)
+        }
+    }
+
+    /** Check if the backend is reachable and update the status indicator. */
+    private fun checkBackendHealth() {
+        viewModelScope.launch {
+            val connected = runCatching { remoteApi.checkHealth() }.getOrDefault(false)
+            _backendConnected.value = connected
         }
     }
 

@@ -275,6 +275,10 @@
     <string name="event_double_damage">Double Damage!</string>
     <string name="event_stun">Stunned!</string>
 
+    <!-- Backend Status -->
+    <string name="backend_online">Server Online</string>
+    <string name="backend_offline">Offline</string>
+
     <!-- Opponent AI -->
     <string name="opponent_uses_ability">Opponent uses %1$s!</string>
     <string name="opponent_increases_power">Opponent increases power!</string>

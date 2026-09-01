@@ -275,6 +275,10 @@
     <string name="event_double_damage">ضربه دوبل!</string>
     <string name="event_stun">بی‌حرکت!</string>
 
+    <!-- Backend Status -->
+    <string name="backend_online">سرور فعال</string>
+    <string name="backend_offline">آفلاین</string>
+
     <!-- Opponent AI -->
     <string name="opponent_uses_ability">حریف از %1$s استفاده می‌کند!</string>
     <string name="opponent_increases_power">حریف قدرتش را افزایش می‌دهد!</string>

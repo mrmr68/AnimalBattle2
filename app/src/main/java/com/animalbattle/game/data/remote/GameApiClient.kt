@@ -30,6 +30,21 @@ object ApiClientConfig {
  */
 class GameApiClient {
 
+    /**
+     * Quick health check against the backend.
+     * Returns true when the server responds with status "ok".
+     */
+    suspend fun checkHealth(): Boolean = withContext(Dispatchers.IO) {
+        if (ApiClientConfig.baseUrl.isBlank()) return@withContext false
+        try {
+            val url = "${ApiClientConfig.baseUrl}/api/v1/health"
+            val body = httpCall(url, method = "GET") ?: return@withContext false
+            JSONObject(body).optString("status") == "ok"
+        } catch (_: Exception) {
+            false
+        }
+    }
+
     /** Weekly leaderboard; null when the backend is unreachable or disabled. */
     suspend fun fetchWeeklyLeaderboard(limit: Int = 100): List<LeaderboardEntry>? =
         withContext(Dispatchers.IO) {

@@ -275,6 +275,10 @@
     <string name="event_double_damage">ضربة مضاعفة!</string>
     <string name="event_stun">صعق!</string>
 
+    <!-- Backend Status -->
+    <string name="backend_online">الخادم متصل</string>
+    <string name="backend_offline">غير متصل</string>
+
     <!-- Opponent AI -->
     <string name="opponent_uses_ability">الخصم يستخدم %1$s!</string>
     <string name="opponent_increases_power">الخصم يزيد قوته!</string>
