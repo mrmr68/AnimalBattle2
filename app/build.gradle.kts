@@ -3,6 +3,10 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// Read an optional gradle property, defaulting to empty string.
+fun propertyOrEmpty(name: String): String =
+    (project.findProperty(name) as String?) ?: ""
+
 android {
     namespace = "com.animalbattle.game"
     compileSdk = 34
@@ -20,6 +24,10 @@ android {
         }
 
         resConfigs("en", "fa", "ar")
+
+        // Backend base URL; blank = remote sync disabled (offline mock only).
+        // Override with: ./gradlew assembleDebug -PapiBaseUrl=https://your-host
+        buildConfigField("String", "API_BASE_URL", "\"${propertyOrEmpty("apiBaseUrl")}\"")
     }
 
     buildTypes {
@@ -47,6 +55,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     composeOptions {

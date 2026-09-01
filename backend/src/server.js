@@ -79,6 +79,10 @@ function createApp({ pool } = {}) {
       }
     }
     if (typeof b.won !== 'boolean') errors.push('won must be a boolean');
+    if (b.clientBattleId !== undefined &&
+        (typeof b.clientBattleId !== 'string' || b.clientBattleId.length === 0 || b.clientBattleId.length > 64)) {
+      errors.push('clientBattleId must be 1-64 chars when provided');
+    }
     const rewardCoins = Number(b.rewardCoins ?? 0);
     const rewardTrophies = Number(b.rewardTrophies ?? 0);
     if (!Number.isInteger(rewardCoins) || rewardCoins < 0 || rewardCoins > 1000) {
@@ -97,21 +101,29 @@ function createApp({ pool } = {}) {
       won: b.won,
       rewardCoins,
       rewardTrophies,
+      clientBattleId: b.clientBattleId,
     });
-    res.status(201).json(result);
+    res.status(result.duplicate ? 200 : 201).json(result);
   }));
 
   app.get('/api/v1/battles/recent', requirePlayerId, wrap(async (req, res) => {
-    const limit = Number(req.query.limit ?? 20);
-    const battles = await store.getRecentBattles(db, req.playerId, Number.isInteger(limit) ? limit : 20);
+    const limit = clampLimit(req.query.limit, 20);
+    const battles = await store.getRecentBattles(db, req.playerId, limit);
     res.json(battles);
   }));
 
   app.get('/api/v1/leaderboard/weekly', wrap(async (req, res) => {
-    const limit = Number(req.query.limit ?? 100);
-    const entries = await store.getWeeklyLeaderboard(db, Number.isInteger(limit) ? limit : 100);
+    const limit = clampLimit(req.query.limit, 100);
+    const entries = await store.getWeeklyLeaderboard(db, limit);
     res.json(entries);
   }));
+
+  // Clamp a query-param limit to a sane positive integer range.
+  function clampLimit(raw, fallback) {
+    const n = Number(raw ?? fallback);
+    if (!Number.isInteger(n)) return fallback;
+    return Math.max(1, Math.min(n, 100));
+  }
 
   // 404 for unknown API routes
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
@@ -120,7 +132,7 @@ function createApp({ pool } = {}) {
   // eslint-disable-next-line no-unused-vars
   app.use((err, _req, res, _next) => {
     console.error('[error]', err.message);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(err.statusCode || 500).json({ error: err.statusCode ? err.message : 'Internal server error' });
   });
 
   return app;

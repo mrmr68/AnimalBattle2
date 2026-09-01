@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,6 +49,10 @@ fun LeaderboardScreen(
 ) {
     val player by viewModel.player.collectAsState()
     val leaderboard by viewModel.leaderboard.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.refreshLeaderboard()
+    }
 
     Column(
         modifier = Modifier

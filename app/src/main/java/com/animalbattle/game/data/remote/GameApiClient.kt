@@ -17,8 +17,8 @@ import java.net.URL
  * remains fully playable offline.
  */
 object ApiClientConfig {
-    /** Base URL of the deployed backend, e.g. "https://api.example.com". Blank = disabled. */
-    var baseUrl: String = ""
+    /** Base URL of the deployed backend. Blank = remote sync disabled (offline mock only). */
+    var baseUrl: String = com.animalbattle.game.BuildConfig.API_BASE_URL
 
     /** Network calls fail fast so UI never blocks on a dead backend. */
     const val TIMEOUT_MS: Int = 3_000

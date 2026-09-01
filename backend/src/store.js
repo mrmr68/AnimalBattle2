@@ -47,20 +47,42 @@ async function updatePlayerProfile(pool, playerId, { name, selectedAnimalId }) {
 
 /**
  * Records a finished battle and applies its rewards atomically.
+ * Idempotent on clientBattleId: a retry with the same id returns the
+ * original result without re-applying rewards.
  * Rewards follow the game rules: win = +25 coins, +1 trophy (passed in,
  * validated server-side to stay positive and bounded).
  */
-async function recordBattle(pool, { playerId, playerAnimalId, opponentName, opponentAnimalId, won, rewardCoins, rewardTrophies }) {
+async function recordBattle(pool, { playerId, playerAnimalId, opponentName, opponentAnimalId, won, rewardCoins, rewardTrophies, clientBattleId }) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
 
+    if (clientBattleId) {
+      const existing = await client.query(
+        `SELECT id, created_at FROM battles WHERE client_battle_id = $1 AND player_id = $2`,
+        [clientBattleId, playerId]
+      );
+      if (existing.rows.length > 0) {
+        await client.query('COMMIT');
+        const player = await client.query(
+          `SELECT coins, trophies, level FROM players WHERE id = $1`,
+          [playerId]
+        );
+        return {
+          battleId: existing.rows[0].id,
+          createdAt: existing.rows[0].created_at,
+          player: player.rows[0],
+          duplicate: true,
+        };
+      }
+    }
+
     const battleResult = await client.query(
       `INSERT INTO battles
-         (player_id, player_animal_id, opponent_name, opponent_animal_id, won, reward_coins, reward_trophies)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+         (player_id, player_animal_id, opponent_name, opponent_animal_id, won, reward_coins, reward_trophies, client_battle_id)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING id, created_at`,
-      [playerId, playerAnimalId, opponentName, opponentAnimalId, won, rewardCoins, rewardTrophies]
+      [playerId, playerAnimalId, opponentName, opponentAnimalId, won, rewardCoins, rewardTrophies, clientBattleId || null]
     );
 
     const coinDelta = won ? rewardCoins : 0;
@@ -82,9 +104,16 @@ async function recordBattle(pool, { playerId, playerAnimalId, opponentName, oppo
       battleId: battleResult.rows[0].id,
       createdAt: battleResult.rows[0].created_at,
       player: playerResult.rows[0],
+      duplicate: false,
     };
   } catch (err) {
     await client.query('ROLLBACK');
+    // Foreign-key violation: unknown player id -> surface as not-found.
+    if (err.code === '23503') {
+      const notFound = new Error('Player not found');
+      notFound.statusCode = 404;
+      throw notFound;
+    }
     throw err;
   } finally {
     client.release();

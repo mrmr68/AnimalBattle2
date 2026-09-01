@@ -11,8 +11,11 @@ test('runMigrations applies new files and records them', async () => {
   await runMigrations(pool);
   // INSERT goes through pool.connect() client, not pool.query — inspect the client.
   const inserts = pool.client.queries.filter((c) => c.text.includes('INSERT INTO schema_migrations'));
-  assert.equal(inserts.length, 1);
-  assert.equal(inserts[0].params[0], '001_init.sql');
+  // One per .sql file in migrations/ (001_init.sql, 002_battle_idempotency.sql)
+  const files = inserts.map((c) => c.params[0]);
+  assert.ok(files.includes('001_init.sql'));
+  assert.ok(files.includes('002_battle_idempotency.sql'));
+  assert.equal(inserts.length, files.length);
 });
 
 test('runMigrations skips already-applied files', async () => {

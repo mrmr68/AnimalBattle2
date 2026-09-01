@@ -106,6 +106,51 @@ test('POST /battles records and returns rewards', async () => {
   assert.equal(res.json.player.coins, 125);
 });
 
+test('GET /battles/recent clamps negative limit', async () => {
+  const pool = new StubPool([
+    { match: (t) => t.includes('FROM battles'), result: { rows: [], rowCount: 0 } },
+  ]);
+  const app = createApp({ pool });
+  const res = await call(app, 'GET', '/api/v1/battles/recent?limit=-5', { headers: { 'X-Player-Id': '1' } });
+  assert.equal(res.status, 200);
+  const callRow = pool.queryCalls.find((c) => c.text.includes('FROM battles'));
+  assert.equal(callRow.params[1], 1);
+});
+
+test('POST /battles returns 404 for unknown player (FK violation)', async () => {
+  const pool = new StubPool();
+  pool.client.query = async (text) => {
+    if (text === 'BEGIN' || text === 'ROLLBACK') return { rows: [], rowCount: 0 };
+    const err = new Error('foreign key violation');
+    err.code = '23503';
+    throw err;
+  };
+  const app = createApp({ pool });
+  const res = await call(app, 'POST', '/api/v1/battles', {
+    headers: { 'X-Player-Id': '999' },
+    body: { playerAnimalId: 'lion', opponentName: 'S', opponentAnimalId: 'wolf', won: true, rewardCoins: 25, rewardTrophies: 1 },
+  });
+  assert.equal(res.status, 404);
+});
+
+test('POST /battles is idempotent on clientBattleId (200 duplicate, no double rewards)', async () => {
+  const pool = new StubPool([
+    { match: (t) => t.includes('WHERE client_battle_id = $1'), result: { rows: [{ id: 7, created_at: new Date() }], rowCount: 1 } },
+    { match: (t) => t.includes('SELECT coins, trophies, level FROM players'), result: { rows: [{ coins: 125, trophies: 6, level: 1 }], rowCount: 1 } },
+  ]);
+  const app = createApp({ pool });
+  const res = await call(app, 'POST', '/api/v1/battles', {
+    headers: { 'X-Player-Id': '1' },
+    body: {
+      playerAnimalId: 'lion', opponentName: 'Shadow', opponentAnimalId: 'wolf',
+      won: true, rewardCoins: 25, rewardTrophies: 1, clientBattleId: 'abc-123',
+    },
+  });
+  assert.equal(res.status, 200);
+  assert.equal(res.json.duplicate, true);
+  assert.ok(!pool.queryCalls.some((c) => c.text.includes('INSERT INTO battles')));
+});
+
 test('GET /battles/recent requires auth and returns rows', async () => {
   const pool = new StubPool([
     { match: (t) => t.includes('FROM battles'), result: { rows: [{ id: 1, won: true }], rowCount: 1 } },

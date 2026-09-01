@@ -75,6 +75,65 @@ test('recordBattle defeat grants zero rewards', async () => {
 
   assert.equal(result.player.coins, 100);
   assert.equal(result.player.trophies, 5);
+  assert.equal(result.duplicate, false);
+});
+
+test('recordBattle is idempotent on clientBattleId (no double rewards)', async () => {
+  const pool = new StubPool([
+    // Duplicate check finds an existing row for this clientBattleId
+    { match: (t) => t.includes('WHERE client_battle_id = $1'), result: { rows: [{ id: 7, created_at: new Date() }], rowCount: 1 } },
+    // Current player state read for the echo-back
+    { match: (t) => t.includes('SELECT coins, trophies, level FROM players'), result: { rows: [{ coins: 125, trophies: 6, level: 1 }], rowCount: 1 } },
+  ]);
+
+  const result = await store.recordBattle(pool, {
+    playerId: 1,
+    playerAnimalId: 'lion',
+    opponentName: 'Shadow',
+    opponentAnimalId: 'wolf',
+    won: true,
+    rewardCoins: 25,
+    rewardTrophies: 1,
+    clientBattleId: 'abc-123',
+  });
+
+  assert.equal(result.duplicate, true);
+  assert.equal(result.battleId, 7);
+  // No INSERT INTO battles / UPDATE players reward query ran
+  assert.ok(!pool.queryCalls.some((c) => c.text.includes('INSERT INTO battles')));
+  assert.ok(!pool.queryCalls.some((c) => c.text.includes('UPDATE players SET')));
+});
+
+test('recordBattle stores clientBattleId on insert', async () => {
+  const pool = new StubPool([
+    { match: (t) => t.includes('INSERT INTO battles'), result: { rows: [{ id: 12, created_at: new Date() }], rowCount: 1 } },
+    { match: (t) => t.includes('UPDATE players SET'), result: { rows: [{ coins: 125, trophies: 6, level: 1 }], rowCount: 1 } },
+  ]);
+
+  await store.recordBattle(pool, {
+    playerId: 1, playerAnimalId: 'lion', opponentName: 'S', opponentAnimalId: 'wolf',
+    won: true, rewardCoins: 25, rewardTrophies: 1, clientBattleId: 'uuid-1',
+  });
+
+  const insert = pool.client.queries.find((c) => c.text.includes('INSERT INTO battles'));
+  assert.equal(insert.params[7], 'uuid-1');
+});
+
+test('recordBattle maps FK violation to 404', async () => {
+  const pool = new StubPool();
+  // StubClient.query returns {rows:[]} for everything — simulate FK error by monkey-patching
+  pool.client.query = async (text) => {
+    if (text === 'BEGIN') return { rows: [], rowCount: 0 };
+    if (text === 'ROLLBACK') return { rows: [], rowCount: 0 };
+    const err = new Error('insert or update on table "battles" violates foreign key');
+    err.code = '23503';
+    throw err;
+  };
+
+  await assert.rejects(
+    () => store.recordBattle(pool, { playerId: 999, playerAnimalId: 'lion', opponentName: 'S', opponentAnimalId: 'wolf', won: true, rewardCoins: 25, rewardTrophies: 1 }),
+    (err) => err.statusCode === 404
+  );
 });
 
 test('getRecentBattles caps limit at 50', async () => {
