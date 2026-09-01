@@ -38,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.animalbattle.game.R
+import com.animalbattle.game.ui.components.ConnectionStatusIndicator
 import com.animalbattle.game.ui.components.TopBar
 import com.animalbattle.game.ui.theme.Cream
 import com.animalbattle.game.ui.theme.CreamLight
@@ -97,20 +98,7 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(RoundedCornerShape(50))
-                        .background(
-                            if (backendConnected) Color(0xFF4CAF50) else Color(0xFFF44336)
-                        )
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = if (backendConnected) stringResource(R.string.backend_online) else stringResource(R.string.backend_offline),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TextPrimary.copy(alpha = 0.6f)
-                )
+                ConnectionStatusIndicator(connected = backendConnected)
             }
 
             Spacer(modifier = Modifier.height(8.dp))

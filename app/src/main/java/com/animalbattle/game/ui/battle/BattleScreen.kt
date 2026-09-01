@@ -42,6 +42,7 @@ import com.animalbattle.game.domain.model.BattleResult
 import com.animalbattle.game.domain.model.BattleState
 import com.animalbattle.game.domain.model.GameConfig
 import com.animalbattle.game.ui.components.AnimatedAnimal
+import com.animalbattle.game.ui.components.ConnectionStatusIndicator
 import com.animalbattle.game.ui.components.AnimalSize
 import com.animalbattle.game.ui.components.BackButton
 import com.animalbattle.game.ui.components.GameButton
@@ -86,27 +87,13 @@ fun BattleScreen(
             .background(Cream)
     ) {
         // Backend status indicator (top-right corner)
-        Row(
+        ConnectionStatusIndicator(
+            connected = backendConnected,
             modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        if (backendConnected) Color(0xFF4CAF50) else Color(0xFFF44336)
-                    )
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = if (backendConnected) stringResource(R.string.backend_online) else stringResource(R.string.backend_offline),
-                style = MaterialTheme.typography.labelSmall,
-                color = Color.White.copy(alpha = 0.7f)
-            )
-        }
+            textColor = Color.White.copy(alpha = 0.7f)
+        )
 
         battleState?.let { state ->
             when (state.battlePhase) {

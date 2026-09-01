@@ -44,6 +44,7 @@ import com.animalbattle.game.domain.model.AnimalData
 import com.animalbattle.game.ui.components.AnimatedAnimal
 import com.animalbattle.game.ui.components.AnimalSize
 import com.animalbattle.game.ui.components.BackButton
+import com.animalbattle.game.ui.components.ConnectionStatusIndicator
 import com.animalbattle.game.ui.components.GameButton
 import com.animalbattle.game.ui.components.GamePanel
 import com.animalbattle.game.ui.components.TopBar
@@ -97,25 +98,7 @@ fun AnimalsScreen(
                 color = GoldDark
             )
             Spacer(modifier = Modifier.weight(1f))
-            // Backend status
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(
-                            if (backendConnected) Color(0xFF4CAF50) else Color(0xFFF44336)
-                        )
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = if (backendConnected) stringResource(R.string.backend_online) else stringResource(R.string.backend_offline),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TextPrimary.copy(alpha = 0.5f)
-                )
-            }
+            ConnectionStatusIndicator(connected = backendConnected)
         }
 
         Spacer(modifier = Modifier.height(12.dp))
