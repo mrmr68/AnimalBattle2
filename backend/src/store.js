@@ -7,6 +7,8 @@
 
 const LEADERBOARD_MAX_ENTRIES = 100;
 const RECENT_BATTLES_MAX = 50;
+const LEADERBOARD_REFRESH_INTERVAL_MS = 60_000;
+let lastLeaderboardRefresh = 0;
 
 async function upsertPlayer(pool, { deviceId, name }) {
   const { rows } = await pool.query(
@@ -137,8 +139,12 @@ async function getRecentBattles(pool, playerId, limit = RECENT_BATTLES_MAX) {
  * Weekly leaderboard from the materialized view, refreshed on read.
  * Returns ranked entries; ties broken by earlier join order (player_id).
  */
-async function getWeeklyLeaderboard(pool, limit = LEADERBOARD_MAX_ENTRIES) {
-  await pool.query('REFRESH MATERIALIZED VIEW CONCURRENTLY weekly_leaderboard');
+async function getWeeklyLeaderboard(pool, limit = LEADERBOARD_MAX_ENTRIES, { forceRefresh = false } = {}) {
+  const now = Date.now();
+  if (forceRefresh || (now - lastLeaderboardRefresh) >= LEADERBOARD_REFRESH_INTERVAL_MS) {
+    await pool.query('REFRESH MATERIALIZED VIEW CONCURRENTLY weekly_leaderboard');
+    lastLeaderboardRefresh = now;
+  }
   const { rows } = await pool.query(
     `WITH ranked AS (
        SELECT player_id, player_name, weekly_trophies, wins, total_battles,
@@ -152,9 +158,12 @@ async function getWeeklyLeaderboard(pool, limit = LEADERBOARD_MAX_ENTRIES) {
   return rows;
 }
 
+const _resetLeaderboardRefreshForTests = () => { lastLeaderboardRefresh = 0; };
+
 module.exports = {
   LEADERBOARD_MAX_ENTRIES,
   RECENT_BATTLES_MAX,
+  _resetLeaderboardRefreshForTests,
   upsertPlayer,
   getPlayerByDeviceId,
   updatePlayerProfile,

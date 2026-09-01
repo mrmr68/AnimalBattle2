@@ -19,8 +19,11 @@ npm run migrate   # creates tables + weekly_leaderboard materialized view
 npm start         # listens on 0.0.0.0:${PORT:-3000}
 ```
 
-See `.env.example` for the variable names (copy to `.env` and fill in —
-never commit real secrets).
+Required environment variable:
+- `DATABASE_URL` — PostgreSQL connection string
+  (e.g. `postgresql://user:pass@host:5432/animalbattle`)
+
+Never commit real secrets.
 
 ## Schema (`migrations/001_init.sql`)
 

@@ -139,13 +139,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val current = _player.value
             if (current.coins >= item.price) {
-                // Compute final coin balance atomically in a single write
+                // Compute final coin balance atomically in a single write.
+                // Coin packs must give a NET profit to be worth buying.
                 val bonus = if (item.category == com.animalbattle.game.domain.model.ShopCategory.COIN_PACK) {
                     when (item.id) {
-                        "coin_pack_small" -> 50
-                        "coin_pack_medium" -> 200
-                        "coin_pack_large" -> 500
-                        else -> 50
+                        "coin_pack_small" -> 100   // cost 50  → profit 50
+                        "coin_pack_medium" -> 500  // cost 200 → profit 300
+                        "coin_pack_large" -> 1500  // cost 500 → profit 1000
+                        else -> 100
                     }
                 } else 0
 
@@ -453,7 +454,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 repository.updatePlayer(
                     current.copy(
                         coins = newCoins,
-                        trophies = newTrophies
+                        trophies = newTrophies,
+                        level = (newTrophies / Player.XP_PER_LEVEL) + 1
                     )
                 )
 
@@ -509,26 +511,32 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val daysSinceLastLogin = (now - player.lastLoginDate) / dayMs
 
         if (daysSinceLastLogin >= 1) {
-            val newStreak = if (daysSinceLastLogin <= 1) {
-                (player.dailyLoginStreak % 7) + 1
-            } else {
+            // Reset streak if more than 1 day gap; otherwise advance within
+            // the 7-day cycle and wrap to day 1 after completing all days.
+            val newStreak = if (daysSinceLastLogin > 1) {
                 1
+            } else {
+                // Same-day gap: advance, wrapping past 7 back to 1.
+                ((player.dailyLoginStreak - 1) % 7) + 2
             }
+            val clampedStreak = newStreak.coerceAtMost(7)
 
             _dailyLoginRewards.value = GameConfig.DAILY_LOGIN_REWARDS.mapIndexed { index, reward ->
                 DailyLoginReward(
                     day = index + 1,
                     reward = reward,
-                    isClaimed = index < (newStreak - 1)
+                    isClaimed = index < clampedStreak
                 )
             }
 
-            if (newStreak > player.dailyLoginStreak || daysSinceLastLogin > 1) {
+            // Show dialog when the streak changed (new day) or wrapped.
+            val streakChanged = clampedStreak != player.dailyLoginStreak || daysSinceLastLogin > 1
+            if (streakChanged) {
                 _showDailyLogin.value = true
                 viewModelScope.launch {
                     repository.updatePlayer(
                         player.copy(
-                            dailyLoginStreak = newStreak,
+                            dailyLoginStreak = clampedStreak,
                             lastLoginDate = now
                         )
                     )

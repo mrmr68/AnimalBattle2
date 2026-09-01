@@ -157,7 +157,8 @@ test('getWeeklyLeaderboard refreshes view and ranks entries', async () => {
     },
   ]);
 
-  const entries = await store.getWeeklyLeaderboard(pool, 10);
+  store._resetLeaderboardRefreshForTests();
+  const entries = await store.getWeeklyLeaderboard(pool, 10, { forceRefresh: true });
   assert.equal(entries[0].player_name, 'Blaze');
   assert.equal(entries[0].rank, 1);
   assert.equal(entries.length, 2);
