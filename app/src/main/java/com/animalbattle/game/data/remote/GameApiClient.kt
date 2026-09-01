@@ -70,7 +70,44 @@ class GameApiClient {
             }
         }
 
-    private fun httpCall(url: String, method: String, payload: String? = null): String? {
+    /**
+     * Submit a finished battle result to the backend.
+     * Returns the server response (battleId, duplicate flag, updated player)
+     * or null when the backend is unreachable.
+     */
+    suspend fun submitBattle(
+        remotePlayerId: Long,
+        clientBattleId: String,
+        playerAnimalId: String,
+        opponentName: String,
+        opponentAnimalId: String,
+        won: Boolean,
+        rewardCoins: Int,
+        rewardTrophies: Int
+    ): JSONObject? = withContext(Dispatchers.IO) {
+        if (ApiClientConfig.baseUrl.isBlank() || remotePlayerId <= 0) return@withContext null
+        try {
+            val url = "${ApiClientConfig.baseUrl}/api/v1/battles"
+            val payload = JSONObject().apply {
+                put("playerAnimalId", playerAnimalId)
+                put("opponentName", opponentName)
+                put("opponentAnimalId", opponentAnimalId)
+                put("won", won)
+                put("rewardCoins", rewardCoins)
+                put("rewardTrophies", rewardTrophies)
+                put("clientBattleId", clientBattleId)
+            }.toString()
+            val body = httpCall(
+                url, method = "POST", payload = payload,
+                extraHeaders = mapOf("X-Player-Id" to remotePlayerId.toString())
+            ) ?: return@withContext null
+            JSONObject(body)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun httpCall(url: String, method: String, payload: String? = null, extraHeaders: Map<String, String> = emptyMap()): String? {
         var connection: HttpURLConnection? = null
         return try {
             connection = (URL(url).openConnection() as HttpURLConnection).apply {
@@ -78,6 +115,9 @@ class GameApiClient {
                 connectTimeout = ApiClientConfig.TIMEOUT_MS
                 readTimeout = ApiClientConfig.TIMEOUT_MS
                 setRequestProperty("Accept", "application/json")
+                for ((key, value) in extraHeaders) {
+                    setRequestProperty(key, value)
+                }
                 if (payload != null) {
                     setRequestProperty("Content-Type", "application/json")
                     doOutput = true

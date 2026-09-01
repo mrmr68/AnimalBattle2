@@ -37,6 +37,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: PlayerRepository
     private val remoteApi = GameApiClient()
+    private var _remotePlayerId: Long = 0L
     private val _player = MutableStateFlow(Player())
     val player: StateFlow<Player> = _player.asStateFlow()
 
@@ -97,6 +98,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             _leaderboard.value = generateMockLeaderboard(player)
             refreshLeaderboard()
             checkDailyLogin(player)
+            registerWithBackend(player)
+        }
+    }
+
+    /** Register this device with the backend so battles can be submitted. */
+    private fun registerWithBackend(player: Player) {
+        viewModelScope.launch {
+            val deviceId = android.provider.Settings.Secure.getString(
+                getApplication<Application>().contentResolver,
+                android.provider.Settings.Secure.ANDROID_ID
+            ) ?: return@launch
+            val id = runCatching { remoteApi.registerPlayer(deviceId, player.name) }.getOrNull()
+            if (id != null && id > 0) {
+                _remotePlayerId = id
+            }
         }
     }
 
@@ -485,6 +501,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             )
             repository.addBattleRecord(record)
 
+            // Submit battle to the backend (fire-and-forget, non-blocking)
+            submitBattleToBackend(record)
+
             _battleState.value = battle.copy(
                 battleResult = if (playerWon) BattleResult.VICTORY else BattleResult.DEFEAT,
                 battlePhase = BattlePhase.BATTLE_OVER
@@ -494,6 +513,28 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun endBattleAndReturn() {
         _battleState.value = null
+    }
+
+    /**
+     * Submit a finished battle to the backend asynchronously.
+     * Uses the record's timestamp as a client battle ID for idempotency.
+     * Fire-and-forget: network errors are silently ignored.
+     */
+    private fun submitBattleToBackend(record: BattleRecord) {
+        viewModelScope.launch {
+            runCatching {
+                remoteApi.submitBattle(
+                    remotePlayerId = _remotePlayerId,
+                    clientBattleId = record.id,
+                    playerAnimalId = record.playerAnimalId,
+                    opponentName = record.opponentName,
+                    opponentAnimalId = record.opponentAnimalId,
+                    won = record.won,
+                    rewardCoins = record.rewardCoins,
+                    rewardTrophies = record.rewardTrophies
+                )
+            }
+        }
     }
 
     // Map battle — track which level to complete on victory
