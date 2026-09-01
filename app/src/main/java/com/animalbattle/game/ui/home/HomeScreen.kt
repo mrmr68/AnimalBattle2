@@ -175,7 +175,7 @@ fun HomeScreen(
                     onClick = onNavigateToLeaderboard
                 )
             }
-    }
+        }
 
     // Daily Login Dialog
     if (showDailyLogin) {

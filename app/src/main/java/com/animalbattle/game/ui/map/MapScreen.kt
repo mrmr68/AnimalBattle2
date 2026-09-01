@@ -101,7 +101,7 @@ fun MapScreen(
                     level = level,
                     onLevelClick = {
                         if (level.status == LevelStatus.AVAILABLE) {
-                            viewModel.completeMapLevel(level.level)
+                            viewModel.setPendingMapLevel(level.level)
                             onStartBattle()
                         }
                     }

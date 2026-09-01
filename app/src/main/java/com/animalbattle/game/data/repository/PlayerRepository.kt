@@ -1,12 +1,11 @@
 package com.animalbattle.game.data.repository
 
 import com.animalbattle.game.data.datastore.PlayerDataStore
-import com.animalbattle.game.domain.model.Animal
 import com.animalbattle.game.domain.model.BattleRecord
 import com.animalbattle.game.domain.model.GameSettings
 import com.animalbattle.game.domain.model.Player
-import com.animalbattle.game.domain.model.Question
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 interface PlayerRepository {
     val playerFlow: Flow<Player>
@@ -37,91 +36,75 @@ class PlayerRepositoryImpl(
     }
 
     override suspend fun addCoins(amount: Int) {
-        dataStore.playerFlow.collect { player ->
-            dataStore.updatePlayer(player.copy(coins = player.coins + amount))
-            return
-        }
+        val player = dataStore.playerFlow.first()
+        dataStore.updatePlayer(player.copy(coins = player.coins + amount))
     }
 
     override suspend fun removeCoins(amount: Int) {
-        dataStore.playerFlow.collect { player ->
-            if (player.coins >= amount) {
-                dataStore.updatePlayer(player.copy(coins = player.coins - amount))
-            }
-            return
+        val player = dataStore.playerFlow.first()
+        if (player.coins >= amount) {
+            dataStore.updatePlayer(player.copy(coins = player.coins - amount))
         }
     }
 
     override suspend fun addTrophies(amount: Int) {
-        dataStore.playerFlow.collect { player ->
-            val newTrophies = player.trophies + amount
-            dataStore.updatePlayer(
-                player.copy(
-                    trophies = newTrophies,
-                    level = (newTrophies / Player.XP_PER_LEVEL) + 1
-                )
+        val player = dataStore.playerFlow.first()
+        val newTrophies = player.trophies + amount
+        dataStore.updatePlayer(
+            player.copy(
+                trophies = newTrophies,
+                level = (newTrophies / Player.XP_PER_LEVEL) + 1
             )
-            return
-        }
+        )
     }
 
     override suspend fun addBattleRecord(record: BattleRecord) {
-        dataStore.playerFlow.collect { player ->
-            val updatedBattles = player.recentBattles + record
-            dataStore.updatePlayer(player.copy(recentBattles = updatedBattles))
-            return
-        }
+        val player = dataStore.playerFlow.first()
+        val updatedBattles = player.recentBattles + record
+        dataStore.updatePlayer(player.copy(recentBattles = updatedBattles))
     }
 
     override suspend fun selectAnimal(animalId: String) {
-        dataStore.playerFlow.collect { player ->
-            if (animalId in player.unlockedAnimals) {
-                dataStore.updatePlayer(player.copy(selectedAnimalId = animalId))
-            }
-            return
+        val player = dataStore.playerFlow.first()
+        if (animalId in player.unlockedAnimals) {
+            dataStore.updatePlayer(player.copy(selectedAnimalId = animalId))
         }
     }
 
     override suspend fun unlockAnimal(animalId: String, cost: Int) {
-        dataStore.playerFlow.collect { player ->
-            if (player.coins >= cost && animalId !in player.unlockedAnimals) {
-                dataStore.updatePlayer(
-                    player.copy(
-                        coins = player.coins - cost,
-                        unlockedAnimals = player.unlockedAnimals + animalId
-                    )
+        val player = dataStore.playerFlow.first()
+        if (player.coins >= cost && animalId !in player.unlockedAnimals) {
+            dataStore.updatePlayer(
+                player.copy(
+                    coins = player.coins - cost,
+                    unlockedAnimals = player.unlockedAnimals + animalId
                 )
-            }
-            return
+            )
         }
     }
 
     override suspend fun upgradeAnimal(animalId: String, cost: Int) {
-        dataStore.playerFlow.collect { player ->
-            if (player.coins >= cost) {
-                val currentLevel = player.animalUpgrades[animalId] ?: 0
-                dataStore.updatePlayer(
-                    player.copy(
-                        coins = player.coins - cost,
-                        animalUpgrades = player.animalUpgrades + (animalId to currentLevel + 1)
-                    )
+        val player = dataStore.playerFlow.first()
+        if (player.coins >= cost) {
+            val currentLevel = player.animalUpgrades[animalId] ?: 0
+            dataStore.updatePlayer(
+                player.copy(
+                    coins = player.coins - cost,
+                    animalUpgrades = player.animalUpgrades + (animalId to currentLevel + 1)
                 )
-            }
-            return
+            )
         }
     }
 
     override suspend fun completeMapLevel(level: Int) {
-        dataStore.playerFlow.collect { player ->
-            if (level !in player.completedLevels) {
-                dataStore.updatePlayer(
-                    player.copy(
-                        completedLevels = player.completedLevels + level,
-                        currentMapLevel = maxOf(player.currentMapLevel, level + 1)
-                    )
+        val player = dataStore.playerFlow.first()
+        if (level !in player.completedLevels) {
+            dataStore.updatePlayer(
+                player.copy(
+                    completedLevels = player.completedLevels + level,
+                    currentMapLevel = maxOf(player.currentMapLevel, level + 1)
                 )
-            }
-            return
+            )
         }
     }
 }

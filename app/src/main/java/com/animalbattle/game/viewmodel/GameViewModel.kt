@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.animalbattle.game.data.datastore.PlayerDataStore
 import com.animalbattle.game.data.repository.PlayerRepository
 import com.animalbattle.game.data.repository.PlayerRepositoryImpl
-import com.animalbattle.game.domain.model.Animal
 import com.animalbattle.game.domain.model.AnimalData
 import com.animalbattle.game.domain.model.BattlePhase
 import com.animalbattle.game.domain.model.BattleRecord
@@ -19,7 +18,6 @@ import com.animalbattle.game.domain.model.LeaderboardEntry
 import com.animalbattle.game.domain.model.LevelStatus
 import com.animalbattle.game.domain.model.MapLevel
 import com.animalbattle.game.domain.model.Player
-import com.animalbattle.game.domain.model.Question
 import com.animalbattle.game.domain.model.QuestionData
 import com.animalbattle.game.domain.model.Reward
 import com.animalbattle.game.domain.model.RewardType
@@ -137,27 +135,38 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val current = _player.value
             if (current.coins >= item.price) {
-                repository.updatePlayer(current.copy(coins = current.coins - item.price))
-                when (item.category) {
-                    com.animalbattle.game.domain.model.ShopCategory.COIN_PACK -> {
-                        val bonus = when (item.id) {
-                            "coin_pack_small" -> 50
-                            "coin_pack_medium" -> 200
-                            "coin_pack_large" -> 500
-                            else -> 50
-                        }
-                        repository.addCoins(bonus)
+                // Compute final coin balance atomically in a single write
+                val bonus = if (item.category == com.animalbattle.game.domain.model.ShopCategory.COIN_PACK) {
+                    when (item.id) {
+                        "coin_pack_small" -> 50
+                        "coin_pack_medium" -> 200
+                        "coin_pack_large" -> 500
+                        else -> 50
                     }
-                    else -> { /* Handle other categories */ }
-                }
+                } else 0
+
+                repository.updatePlayer(
+                    current.copy(coins = current.coins - item.price + bonus)
+                )
             }
         }
     }
 
+    private fun isNewDay(lastTimestamp: Long): Boolean {
+        val now = System.currentTimeMillis()
+        val dayMs = 24 * 60 * 60 * 1000L
+        return (now / dayMs) != (lastTimestamp / dayMs)
+    }
+
     fun spinWheel() {
         viewModelScope.launch {
-            val current = _player.value
+            var current = _player.value
             if (current.coins < GameConfig.LUCKY_WHEEL_SPIN_COST) return@launch
+
+            // Reset spin count if it's a new day
+            if (isNewDay(current.lastSpinDate)) {
+                current = current.copy(luckyWheelSpinsToday = 0)
+            }
             if (current.luckyWheelSpinsToday >= GameConfig.MAX_DAILY_SPINS) return@launch
 
             repository.updatePlayer(
@@ -394,12 +403,26 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             val battle = _battleState.value ?: return@launch
 
             if (playerWon) {
-                repository.addCoins(GameConfig.BATTLE_WIN_COINS)
-                repository.addTrophies(GameConfig.BATTLE_WIN_TROPHIES)
-
+                // Apply all win rewards in a single atomic write
+                val newCoins = current.coins + GameConfig.BATTLE_WIN_COINS
+                val newTrophies = current.trophies + GameConfig.BATTLE_WIN_TROPHIES
                 val previousLevel = current.calculateLevel()
-                val updatedPlayer = repository.playerFlow.first()
-                val newLevel = updatedPlayer.calculateLevel()
+                val newLevel = (newTrophies / Player.XP_PER_LEVEL) + 1
+
+                repository.updatePlayer(
+                    current.copy(
+                        coins = newCoins,
+                        trophies = newTrophies
+                    )
+                )
+
+                // Complete pending map level if one was set
+                _pendingMapLevel?.let { level ->
+                    repository.completeMapLevel(level)
+                    _pendingMapLevel = null
+                    val updatedPlayer = repository.playerFlow.first()
+                    _mapLevels.value = getMapLevelsForPlayer(updatedPlayer)
+                }
 
                 if (newLevel > previousLevel) {
                     _newLevel.value = newLevel
@@ -428,6 +451,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     fun endBattleAndReturn() {
         _battleState.value = null
+    }
+
+    // Map battle — track which level to complete on victory
+    private var _pendingMapLevel: Int? = null
+
+    /** Sets the pending map level; BattleScreen's LaunchedEffect starts the actual battle. */
+    fun setPendingMapLevel(level: Int) {
+        _pendingMapLevel = level
     }
 
     // Daily Login
@@ -512,11 +543,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun completeMapLevel(level: Int) {
+    /** Refresh map levels from persisted player state. */
+    fun refreshMapLevels() {
         viewModelScope.launch {
-            repository.completeMapLevel(level)
-            val updatedPlayer = repository.playerFlow.first()
-            _mapLevels.value = getMapLevelsForPlayer(updatedPlayer)
+            val player = repository.playerFlow.first()
+            _mapLevels.value = getMapLevelsForPlayer(player)
         }
     }
 
