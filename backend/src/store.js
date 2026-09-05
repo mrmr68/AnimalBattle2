@@ -10,14 +10,19 @@ const RECENT_BATTLES_MAX = 50;
 const LEADERBOARD_REFRESH_INTERVAL_MS = 60_000;
 let lastLeaderboardRefresh = 0;
 
+const PLAYER_COLUMNS = `id, device_id, name, level, xp, coins, trophies,
+    selected_animal_id, unlocked_animals, animal_upgrades,
+    daily_login_streak, last_login_date, lucky_wheel_spins_today,
+    last_spin_date, current_map_level, completed_levels,
+    language, sound_enabled, music_enabled, notifications_enabled`;
+
 async function upsertPlayer(pool, { deviceId, name }) {
   const { rows } = await pool.query(
     `INSERT INTO players (device_id, name)
      VALUES ($1, $2)
      ON CONFLICT (device_id)
      DO UPDATE SET name = EXCLUDED.name, updated_at = now()
-     RETURNING id, device_id, name, level, xp, coins, trophies,
-               selected_animal_id, unlocked_animals, animal_upgrades`,
+     RETURNING ${PLAYER_COLUMNS}`,
     [deviceId, name || 'Player']
   );
   return rows[0];
@@ -25,10 +30,71 @@ async function upsertPlayer(pool, { deviceId, name }) {
 
 async function getPlayerByDeviceId(pool, deviceId) {
   const { rows } = await pool.query(
-    `SELECT id, device_id, name, level, xp, coins, trophies,
-            selected_animal_id, unlocked_animals, animal_upgrades
-     FROM players WHERE device_id = $1`,
+    `SELECT ${PLAYER_COLUMNS} FROM players WHERE device_id = $1`,
     [deviceId]
+  );
+  return rows[0] || null;
+}
+
+/**
+ * Full player state sync: client pushes its local state to the backend.
+ * Only overwrites fields the client actually manages; the backend
+ * keeps its own created_at / updated_at timestamps.
+ */
+async function syncPlayerState(pool, playerId, state) {
+  const {
+    name, level, xp, coins, trophies,
+    selectedAnimalId, unlockedAnimals, animalUpgrades,
+    dailyLoginStreak, lastLoginDate,
+    luckyWheelSpinsToday, lastSpinDate,
+    currentMapLevel, completedLevels,
+    language, soundEnabled, musicEnabled, notificationsEnabled,
+  } = state;
+
+  const { rows } = await pool.query(
+    `UPDATE players SET
+       name = COALESCE($2, name),
+       level = COALESCE($3, level),
+       xp = COALESCE($4, xp),
+       coins = COALESCE($5, coins),
+       trophies = COALESCE($6, trophies),
+       selected_animal_id = COALESCE($7, selected_animal_id),
+       unlocked_animals = COALESCE($8, unlocked_animals),
+       animal_upgrades = COALESCE($9, animal_upgrades),
+       daily_login_streak = COALESCE($10, daily_login_streak),
+       last_login_date = COALESCE($11, last_login_date),
+       lucky_wheel_spins_today = COALESCE($12, lucky_wheel_spins_today),
+       last_spin_date = COALESCE($13, last_spin_date),
+       current_map_level = COALESCE($14, current_map_level),
+       completed_levels = COALESCE($15, completed_levels),
+       language = COALESCE($16, language),
+       sound_enabled = COALESCE($17, sound_enabled),
+       music_enabled = COALESCE($18, music_enabled),
+       notifications_enabled = COALESCE($19, notifications_enabled),
+       updated_at = now()
+     WHERE id = $1
+     RETURNING ${PLAYER_COLUMNS}`,
+    [
+      playerId,
+      name ?? null,
+      level ?? null,
+      xp ?? null,
+      coins ?? null,
+      trophies ?? null,
+      selectedAnimalId ?? null,
+      unlockedAnimals ?? null,
+      animalUpgrades ?? null,
+      dailyLoginStreak ?? null,
+      lastLoginDate ?? null,
+      luckyWheelSpinsToday ?? null,
+      lastSpinDate ?? null,
+      currentMapLevel ?? null,
+      completedLevels ?? null,
+      language ?? null,
+      soundEnabled ?? null,
+      musicEnabled ?? null,
+      notificationsEnabled ?? null,
+    ]
   );
   return rows[0] || null;
 }
@@ -167,6 +233,7 @@ module.exports = {
   upsertPlayer,
   getPlayerByDeviceId,
   updatePlayerProfile,
+  syncPlayerState,
   recordBattle,
   getRecentBattles,
   getWeeklyLeaderboard,

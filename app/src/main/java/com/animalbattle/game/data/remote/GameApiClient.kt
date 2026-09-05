@@ -122,6 +122,56 @@ class GameApiClient {
         }
     }
 
+    /**
+     * Push full player state to the backend for cloud save.
+     * Returns the merged server-side player state, or null on failure.
+     */
+    suspend fun syncPlayerState(
+        remotePlayerId: Long,
+        name: String,
+        level: Int,
+        xp: Int,
+        coins: Int,
+        trophies: Int,
+        selectedAnimalId: String,
+        unlockedAnimals: List<String>,
+        animalUpgrades: Map<String, Int>,
+        dailyLoginStreak: Int,
+        lastLoginDate: Long,
+        luckyWheelSpinsToday: Int,
+        lastSpinDate: Long,
+        currentMapLevel: Int,
+        completedLevels: List<Int>
+    ): JSONObject? = withContext(Dispatchers.IO) {
+        if (ApiClientConfig.baseUrl.isBlank() || remotePlayerId <= 0) return@withContext null
+        try {
+            val url = "${ApiClientConfig.baseUrl}/api/v1/players/me/sync"
+            val payload = JSONObject().apply {
+                put("name", name)
+                put("level", level)
+                put("xp", xp)
+                put("coins", coins)
+                put("trophies", trophies)
+                put("selectedAnimalId", selectedAnimalId)
+                put("unlockedAnimals", JSONArray(unlockedAnimals))
+                put("animalUpgrades", JSONObject(animalUpgrades.mapValues { it.value }))
+                put("dailyLoginStreak", dailyLoginStreak)
+                put("lastLoginDate", lastLoginDate)
+                put("luckyWheelSpinsToday", luckyWheelSpinsToday)
+                put("lastSpinDate", lastSpinDate)
+                put("currentMapLevel", currentMapLevel)
+                put("completedLevels", JSONArray(completedLevels))
+            }.toString()
+            val body = httpCall(
+                url, method = "PUT", payload = payload,
+                extraHeaders = mapOf("X-Player-Id" to remotePlayerId.toString())
+            ) ?: return@withContext null
+            JSONObject(body)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     private fun httpCall(url: String, method: String, payload: String? = null, extraHeaders: Map<String, String> = emptyMap()): String? {
         var connection: HttpURLConnection? = null
         return try {

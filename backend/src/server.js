@@ -70,6 +70,14 @@ function createApp({ pool } = {}) {
     res.json(player);
   }));
 
+  // Full player state sync: client pushes local state, server returns merged state.
+  app.put('/api/v1/players/me/sync', requirePlayerId, wrap(async (req, res) => {
+    const s = req.body || {};
+    const player = await store.syncPlayerState(db, req.playerId, s);
+    if (!player) return res.status(404).json({ error: 'Player not found' });
+    res.json(player);
+  }));
+
   app.post('/api/v1/battles', requirePlayerId, wrap(async (req, res) => {
     const b = req.body || {};
     const errors = [];

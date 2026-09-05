@@ -124,6 +124,35 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             val id = runCatching { remoteApi.registerPlayer(deviceId, player.name) }.getOrNull()
             if (id != null && id > 0) {
                 _remotePlayerId = id
+                // Sync local state to backend for cloud save
+                syncToBackend()
+            }
+        }
+    }
+
+    /** Push local player state to backend for cloud save. */
+    private fun syncToBackend() {
+        viewModelScope.launch {
+            if (_remotePlayerId <= 0) return@launch
+            val player = _player.value
+            runCatching {
+                remoteApi.syncPlayerState(
+                    remotePlayerId = _remotePlayerId,
+                    name = player.name,
+                    level = player.calculateLevel(),
+                    xp = player.xp,
+                    coins = player.coins,
+                    trophies = player.trophies,
+                    selectedAnimalId = player.selectedAnimalId,
+                    unlockedAnimals = player.unlockedAnimals,
+                    animalUpgrades = player.animalUpgrades,
+                    dailyLoginStreak = player.dailyLoginStreak,
+                    lastLoginDate = player.lastLoginDate,
+                    luckyWheelSpinsToday = player.luckyWheelSpinsToday,
+                    lastSpinDate = player.lastSpinDate,
+                    currentMapLevel = player.currentMapLevel,
+                    completedLevels = player.completedLevels
+                )
             }
         }
     }
@@ -515,6 +544,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
             // Submit battle to the backend (fire-and-forget, non-blocking)
             submitBattleToBackend(record)
+
+            // Sync updated player state to backend for cloud save
+            syncToBackend()
 
             _battleState.value = battle.copy(
                 battleResult = if (playerWon) BattleResult.VICTORY else BattleResult.DEFEAT,

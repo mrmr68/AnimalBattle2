@@ -44,11 +44,43 @@ Never commit real secrets.
 | POST | `/battles` | `X-Player-Id` | record battle `{playerAnimalId, opponentName, opponentAnimalId, won, rewardCoins, rewardTrophies}` → applies rewards atomically |
 | GET | `/battles/recent?limit=` | `X-Player-Id` | recent battles (max 50) |
 | GET | `/leaderboard/weekly?limit=` | — | ranked weekly entries (max 100) |
+| PUT | `/players/me/sync` | `X-Player-Id` | full player state sync (cloud save) |
 | GET | `/health` | — | liveness + DB check |
 
 Reward bounds are validated server-side (`rewardCoins ≤ 1000`,
 `rewardTrophies ≤ 100`); the client's canonical win reward is
 `25 coins + 1 trophy`.
+
+## Production Deploy
+
+### Docker
+
+```bash
+docker build -t animal-battle-backend ./backend
+
+# Run with a PostgreSQL instance
+docker run -d \
+  --name animal-battle-api \
+  -p 3000:3000 \
+  -e DATABASE_URL=postgresql://user:pass@db-host:5432/animalbattle \
+  animal-battle-backend
+```
+
+Migrations run automatically on container startup.
+
+### Railway / Render / Fly.io
+
+1. Create a PostgreSQL database (managed or self-hosted)
+2. Set `DATABASE_URL` as an environment variable
+3. Deploy the `backend/` directory
+4. Set the start command to `npm start` (migrations run on boot)
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `DATABASE_URL` | ✅ | — | PostgreSQL connection string |
+| `PORT` | — | 3000 | HTTP listen port |
 
 ## Tests
 
