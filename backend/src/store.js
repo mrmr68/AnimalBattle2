@@ -255,6 +255,40 @@ async function recordMatchResult(pool, { matchId, playerId, opponentId, winnerPl
   // number while winnerPlayerId arrives as a string from the JSON body.
   const isPlayerWinner = String(winnerPlayerId) === String(playerId);
 
+  // Reserve the result BEFORE awarding anything. The UNIQUE (match_id,
+  // nonce) constraint means a replayed (or racing duplicate) submission
+  // inserts 0 rows — we then skip the reward UPDATE entirely, so a replay
+  // can never double-award.
+  let inserted = false;
+  try {
+    const ins = await pool.query(
+      `INSERT INTO match_records (match_id, player_id, opponent_id, winner_player_id, nonce, stats_json)
+       VALUES ($1, $2, $3, $4, $5, $6::jsonb)
+       ON CONFLICT (match_id, nonce) DO NOTHING`,
+      [matchId, playerId, opponentId, winnerPlayerId, nonce, JSON.stringify(stats || {})]
+    );
+    inserted = ins.rowCount > 0;
+  } catch (err) {
+    // Unknown player → FK violation on players(id).
+    if (err && (err.code === '23503' || /foreign key/i.test(String(err.message)))) {
+      const nf = new Error('Player not found');
+      nf.statusCode = 404;
+      throw nf;
+    }
+    throw err;
+  }
+
+  // Already recorded → duplicate submission, no second award.
+  if (!inserted) {
+    return {
+      playerId,
+      result: isPlayerWinner ? 'win' : 'loss',
+      player: null,
+      rewards: { coins: 0, xp: 0, trophies: 0 },
+      duplicate: true,
+    };
+  }
+
   const { rows } = await pool.query(
     `UPDATE players SET
        coins = coins + $2,
@@ -272,15 +306,6 @@ async function recordMatchResult(pool, { matchId, playerId, opponentId, winnerPl
     err.statusCode = 404;
     throw err;
   }
-
-  // Persist the match fact (deduplicated by matchId+nonce) so replays
-  // cannot double-award.
-  await pool.query(
-    `INSERT INTO match_records (match_id, player_id, opponent_id, winner_player_id, nonce, stats_json)
-     VALUES ($1, $2, $3, $4, $5, $6::jsonb)
-     ON CONFLICT (match_id, nonce) DO NOTHING`,
-    [matchId, playerId, opponentId, winnerPlayerId, nonce, JSON.stringify(stats || {})]
-  );
 
   return {
     playerId,

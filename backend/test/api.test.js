@@ -252,12 +252,12 @@ test('POST /matches/result validates matchId', async () => {
 test('POST /matches/result records server-authoritative result', async () => {
   const pool = new StubPool([
     {
-      match: (t) => t.includes('UPDATE players SET'),
-      result: { rows: [{ id: 1, name: 'Ali', coins: 125, xp: 20, trophies: 1, level: 1 }], rowCount: 1 },
-    },
-    {
       match: (t) => t.includes('INSERT INTO match_records'),
       result: { rows: [], rowCount: 1 },
+    },
+    {
+      match: (t) => t.includes('UPDATE players SET'),
+      result: { rows: [{ id: 1, name: 'Ali', coins: 125, xp: 20, trophies: 1, level: 1 }], rowCount: 1 },
     },
   ]);
   const app = createApp({ pool });

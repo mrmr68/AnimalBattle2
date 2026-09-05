@@ -221,6 +221,10 @@ test('recordMatchResult awards canonical win rewards', async () => {
   let captured;
   const pool = new StubPool([
     {
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: { rows: [], rowCount: 1 },
+    },
+    {
       match: (t) => t.includes('UPDATE players SET') && t.includes('coins = coins + $2'),
       result: (params) => {
         captured = { coinsDelta: params[1], xpDelta: params[2], trophiesDelta: params[3] };
@@ -229,10 +233,6 @@ test('recordMatchResult awards canonical win rewards', async () => {
           rowCount: 1,
         };
       },
-    },
-    {
-      match: (t) => t.includes('INSERT INTO match_records'),
-      result: { rows: [], rowCount: 1 },
     },
   ]);
 
@@ -254,15 +254,15 @@ test('recordMatchResult awards loss rewards and never trophies', async () => {
   let captured;
   const pool = new StubPool([
     {
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: { rows: [], rowCount: 1 },
+    },
+    {
       match: (t) => t.includes('UPDATE players SET'),
       result: (params) => {
         captured = { coinsDelta: params[1], xpDelta: params[2], trophiesDelta: params[3] };
         return { rows: [{ id: 1, name: 'Ali', coins: 105, xp: 5, trophies: 0, level: 1 }], rowCount: 1 };
       },
-    },
-    {
-      match: (t) => t.includes('INSERT INTO match_records'),
-      result: { rows: [], rowCount: 1 },
     },
   ]);
 
@@ -278,10 +278,14 @@ test('recordMatchResult awards loss rewards and never trophies', async () => {
 });
 
 test('recordMatchResult returns 404 for unknown player', async () => {
+  // Unknown player: the reservation INSERT violates the FK on players(id)
+  // (pg code 23503) and must surface as a 404, never a reward.
   const pool = new StubPool([
     {
-      match: (t) => t.includes('UPDATE players SET'),
-      result: { rows: [], rowCount: 0 },
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: () => {
+        throw { code: '23503', message: 'insert or update on table \"match_records\" violates foreign key constraint' };
+      },
     },
   ]);
   await assert.rejects(
@@ -290,4 +294,34 @@ test('recordMatchResult returns 404 for unknown player', async () => {
     }),
     (err) => err.statusCode === 404
   );
+});
+
+test('recordMatchResult rejects replay of the same result without re-awarding', async () => {
+  let updateQueries = 0;
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: { rows: [], rowCount: 0 }, // duplicate — ON CONFLICT DO NOTHING
+    },
+    {
+      match: (t) => t.includes('UPDATE players SET'),
+      result: () => {
+        updateQueries++;
+        return { rows: [], rowCount: 0 };
+      },
+    },
+  ]);
+
+  const result = await store.recordMatchResult(pool, {
+    matchId: 'ABC123', playerId: 1, opponentId: 2, winnerPlayerId: '1',
+    stats: { perfectAnswers: 2 }, nonce: 'nonce-very-long-001',
+  });
+
+  assert.equal(result.duplicate, true);
+  assert.equal(result.rewards.coins, 0);
+  assert.equal(result.rewards.xp, 0);
+  assert.equal(result.rewards.trophies, 0);
+  assert.equal(result.player, null);
+  // The reward UPDATE must never run for a duplicate submission.
+  assert.equal(updateQueries, 0);
 });
