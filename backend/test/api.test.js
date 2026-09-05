@@ -184,3 +184,50 @@ test('GET /health reports ok', async () => {
   assert.equal(res.status, 200);
   assert.equal(res.json.status, 'ok');
 });
+
+test('PUT /players/me/sync requires X-Player-Id', async () => {
+  const app = createApp({ pool: new StubPool() });
+  const res = await call(app, 'PUT', '/api/v1/players/me/sync', { body: { name: 'Test' } });
+  assert.equal(res.status, 401);
+});
+
+test('PUT /players/me/sync updates and returns player', async () => {
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET') && t.includes('daily_login_streak'),
+      result: {
+        rows: [{ id: 1, device_id: 'dev1', name: 'Ali', level: 5, xp: 30, coins: 500, trophies: 45 }],
+        rowCount: 1,
+      },
+    },
+  ]);
+  const app = createApp({ pool });
+  const res = await call(app, 'PUT', '/api/v1/players/me/sync', {
+    headers: { 'X-Player-Id': '1' },
+    body: {
+      name: 'Ali', level: 5, xp: 30, coins: 500, trophies: 45,
+      selectedAnimalId: 'tiger', unlockedAnimals: ['lion', 'tiger'],
+      animalUpgrades: {}, dailyLoginStreak: 3, lastLoginDate: 0,
+      luckyWheelSpinsToday: 0, lastSpinDate: 0,
+      currentMapLevel: 4, completedLevels: [1, 2, 3],
+    },
+  });
+  assert.equal(res.status, 200);
+  assert.equal(res.json.level, 5);
+  assert.equal(res.json.coins, 500);
+});
+
+test('PUT /players/me/sync returns 404 when player not found', async () => {
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET'),
+      result: { rows: [], rowCount: 0 },
+    },
+  ]);
+  const app = createApp({ pool });
+  const res = await call(app, 'PUT', '/api/v1/players/me/sync', {
+    headers: { 'X-Player-Id': '999' },
+    body: { name: 'Ghost' },
+  });
+  assert.equal(res.status, 404);
+});

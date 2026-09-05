@@ -165,3 +165,42 @@ test('getWeeklyLeaderboard refreshes view and ranks entries', async () => {
   // View refreshed before select
   assert.ok(pool.queryCalls[0].text.includes('REFRESH MATERIALIZED VIEW'));
 });
+
+// ── syncPlayerState ────────────────────────────────────────
+
+test('syncPlayerState updates player and returns updated row', async () => {
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET') && t.includes('daily_login_streak'),
+      result: {
+        rows: [{
+          id: 1, device_id: 'dev1', name: 'Ali', level: 5, xp: 30, coins: 500, trophies: 45,
+          selected_animal_id: 'tiger', unlocked_animals: ['lion', 'tiger'],
+          animal_upgrades: { tiger: 2 },
+          daily_login_streak: 3, last_login_date: 1700000000000,
+          lucky_wheel_spins_today: 1, last_spin_date: 1700000000000,
+          current_map_level: 4, completed_levels: [1, 2, 3],
+          language: 'en', sound_enabled: true, music_enabled: true, notifications_enabled: true,
+        }],
+        rowCount: 1,
+      },
+    },
+  ]);
+
+  const result = await store.syncPlayerState(pool, 1, {
+    name: 'Ali', level: 5, xp: 30, coins: 500, trophies: 45,
+    selectedAnimalId: 'tiger', unlockedAnimals: ['lion', 'tiger'],
+    animalUpgrades: { tiger: 2 },
+    dailyLoginStreak: 3, lastLoginDate: 1700000000000,
+    luckyWheelSpinsToday: 1, lastSpinDate: 1700000000000,
+    currentMapLevel: 4, completedLevels: [1, 2, 3],
+    language: 'en', soundEnabled: true, musicEnabled: true, notificationsEnabled: true,
+  });
+
+  assert.ok(result);
+  assert.equal(result.id, 1);
+  assert.equal(result.name, 'Ali');
+  assert.equal(result.level, 5);
+  assert.equal(result.coins, 500);
+  assert.equal(result.trophies, 45);
+});
