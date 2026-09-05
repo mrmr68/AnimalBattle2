@@ -530,21 +530,29 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Submit a finished battle to the backend asynchronously.
      * Uses the record's timestamp as a client battle ID for idempotency.
-     * Fire-and-forget: network errors are silently ignored.
+     * Retries up to [MAX_SUBMIT_RETRIES] times with exponential back-off.
      */
     private fun submitBattleToBackend(record: BattleRecord) {
         viewModelScope.launch {
-            runCatching {
-                remoteApi.submitBattle(
-                    remotePlayerId = _remotePlayerId,
-                    clientBattleId = record.id,
-                    playerAnimalId = record.playerAnimalId,
-                    opponentName = record.opponentName,
-                    opponentAnimalId = record.opponentAnimalId,
-                    won = record.won,
-                    rewardCoins = record.rewardCoins,
-                    rewardTrophies = record.rewardTrophies
-                )
+            var attempt = 0
+            while (attempt < MAX_SUBMIT_RETRIES) {
+                attempt++
+                val result = runCatching {
+                    remoteApi.submitBattle(
+                        remotePlayerId = _remotePlayerId,
+                        clientBattleId = record.id,
+                        playerAnimalId = record.playerAnimalId,
+                        opponentName = record.opponentName,
+                        opponentAnimalId = record.opponentAnimalId,
+                        won = record.won,
+                        rewardCoins = record.rewardCoins,
+                        rewardTrophies = record.rewardTrophies
+                    )
+                }.getOrNull()
+                if (result != null) break // success
+                if (attempt < MAX_SUBMIT_RETRIES) {
+                    delay(SUBMIT_BACKOFF_MS * attempt) // 1 s, 2 s
+                }
             }
         }
     }
@@ -709,3 +717,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 }
+
+/** Max retries for submitting a battle to the backend. */
+private const val MAX_SUBMIT_RETRIES = 3
+/** Base delay in ms between retries (multiplied by attempt number). */
+private const val SUBMIT_BACKOFF_MS = 1_000L
