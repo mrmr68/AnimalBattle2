@@ -283,4 +283,57 @@
     <string name="opponent_uses_ability">Opponent uses %1$s!</string>
     <string name="opponent_increases_power">Opponent increases power!</string>
     <string name="opponent_attacks">Opponent attacks!</string>
+
+    <!-- World Map Regions -->
+    <string name="region_forest">Whispering Woods</string>
+    <string name="region_desert">Scorching Sands</string>
+    <string name="region_arctic">Frozen Peaks</string>
+    <string name="region_volcano">Molten Core</string>
+    <string name="region_island">Mystery Island</string>
+    <string name="region_castle">Shadow Fortress</string>
+
+    <!-- Stage Names -->
+    <string name="stage_forest_path">Forest Path</string>
+    <string name="stage_mossy_glade">Mossy Glade</string>
+    <string name="stage_ancient_oak">Ancient Oak</string>
+    <string name="stage_wolf_den">Wolf Den</string>
+    <string name="stage_forest_guardian">Forest Guardian</string>
+    <string name="stage_sand_dunes">Sand Dunes</string>
+    <string name="stage_oasis">Oasis</string>
+    <string name="stage_ruins">Ruins</string>
+    <string name="stage_sandstorm">Sandstorm</string>
+    <string name="stage_desert_king">Desert King</string>
+    <string name="stage_snowfield">Snowfield</string>
+    <string name="stage_ice_cave">Ice Cave</string>
+    <string name="stage_frozen_lake">Frozen Lake</string>
+    <string name="stage_avalanche">Avalanche</string>
+    <string name="stage_frost_titan">Frost Titan</string>
+    <string name="stage_lava_field">Lava Field</string>
+    <string name="stage_magma_river">Magma River</string>
+    <string name="stage_fire_gorge">Fire Gorge</string>
+    <string name="stage_eruption">Eruption</string>
+    <string name="stage_inferno_dragon">Inferno Dragon</string>
+    <string name="stage_beach">Beach</string>
+    <string name="stage_jungle">Jungle</string>
+    <string name="stage_island_volcano">Island Volcano</string>
+    <string name="stage_temple">Temple</string>
+    <string name="stage_island_boss">Island Boss</string>
+    <string name="stage_castle_gates">Castle Gates</string>
+    <string name="stage_throne_room">Throne Room</string>
+    <string name="stage_tower">Tower</string>
+    <string name="stage_dungeon">Dungeon</string>
+    <string name="stage_final_boss">Final Boss</string>
+
+    <!-- Progression -->
+    <string name="xp_label_short">XP</string>
+    <string name="level_up_xp">+XP %1$d</string>
+    <string name="coins_earned">+Coins %1$d</string>
+    <string name="trophies_earned">+Trophies %1$d</string>
+    <string name="combo_bonus">Combo %1$dx</string>
+    <string name="perfect_bonus">Perfect!</string>
+    <string name="stage_complete">Stage Complete!</string>
+    <string name="new_record">New Record!</string>
+    <string name="chest_unlocked">Chest Unlocked!</string>
+    <string name="skin_unlocked">Skin Unlocked!</string>
+    <string name="boost_active">Boost Active</string>
 </resources>
