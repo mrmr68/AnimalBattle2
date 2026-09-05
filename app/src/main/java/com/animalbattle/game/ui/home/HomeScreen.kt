@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,9 +33,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.animalbattle.game.R
@@ -76,7 +80,16 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Cream)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        Cream,
+                        CreamLight,
+                        Gold.copy(alpha = 0.15f),
+                        Cream
+                    )
+                )
+            )
     ) {
         Column(
             modifier = Modifier
@@ -103,14 +116,27 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Game Title
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.displayMedium,
-                color = GoldDark,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            // Game Title with decorative line
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "⚔️",
+                        style = MaterialTheme.typography.displayLarge
+                    )
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.displayMedium.copy(
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 2.sp
+                        ),
+                        color = GoldDark,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -238,10 +264,14 @@ private fun HomeGameButton(
                 scaleX = scale
                 scaleY = scale
             }
-            .shadow(8.dp, RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(16.dp))
-            .background(PanelBackground)
-            .border(3.dp, Gold, RoundedCornerShape(16.dp))
+            .shadow(12.dp, RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(PanelBackground, Gold.copy(alpha = 0.1f))
+                )
+            )
+            .border(2.dp, Gold, RoundedCornerShape(20.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -249,15 +279,29 @@ private fun HomeGameButton(
             )
             .padding(16.dp)
     ) {
-        Text(
-            text = emoji,
-            style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier.size(48.dp)
-        )
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .shadow(4.dp, CircleShape)
+                .clip(CircleShape)
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(Gold.copy(alpha = 0.3f), Gold.copy(alpha = 0.05f))
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = emoji,
+                style = MaterialTheme.typography.displaySmall
+            )
+        }
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
             color = TextPrimary,
             textAlign = TextAlign.Center,
             maxLines = 2

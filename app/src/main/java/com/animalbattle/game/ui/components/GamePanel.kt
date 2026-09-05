@@ -10,23 +10,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.animalbattle.game.ui.theme.Gold
 import com.animalbattle.game.ui.theme.GoldDark
 import com.animalbattle.game.ui.theme.PanelBackground
+import com.animalbattle.game.ui.theme.PanelBackgroundDark
+import com.animalbattle.game.ui.theme.GradientGoldEnd
+import com.animalbattle.game.ui.theme.GradientGoldStart
 
 @Composable
 fun GamePanel(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = PanelBackground,
+    backgroundColor: Brush = Brush.verticalGradient(
+        listOf(PanelBackground, PanelBackgroundDark)
+    ),
     borderColor: Color = Gold,
     cornerRadius: Int = 16,
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(
         modifier = modifier
-            .shadow(8.dp, RoundedCornerShape(cornerRadius.dp))
+            .shadow(12.dp, RoundedCornerShape(cornerRadius.dp))
             .clip(RoundedCornerShape(cornerRadius.dp))
             .background(backgroundColor)
             .border(2.dp, borderColor, RoundedCornerShape(cornerRadius.dp))
@@ -42,9 +48,13 @@ fun GoldBorderPanel(
 ) {
     Box(
         modifier = modifier
-            .shadow(12.dp, RoundedCornerShape(20.dp))
+            .shadow(16.dp, RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
-            .background(PanelBackground)
+            .background(
+                Brush.verticalGradient(
+                    listOf(PanelBackground, Gold.copy(alpha = 0.08f))
+                )
+            )
             .border(3.dp, Gold, RoundedCornerShape(20.dp))
             .padding(12.dp),
         content = content

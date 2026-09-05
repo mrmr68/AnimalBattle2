@@ -19,11 +19,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.animalbattle.game.ui.theme.Gold
 import com.animalbattle.game.ui.theme.GoldDark
+import com.animalbattle.game.ui.theme.GoldDeep
+import com.animalbattle.game.ui.theme.GradientGoldEnd
+import com.animalbattle.game.ui.theme.GradientGoldStart
+import com.animalbattle.game.ui.theme.PanelBackground
 import com.animalbattle.game.ui.theme.TextOnGold
 
 @Composable
@@ -31,7 +37,7 @@ fun GameButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = Gold,
+    backgroundColor: Brush = Brush.horizontalGradient(listOf(GradientGoldStart, Gold, GradientGoldEnd)),
     textColor: Color = TextOnGold,
     enabled: Boolean = true
 ) {
@@ -45,7 +51,7 @@ fun GameButton(
 
     Box(
         modifier = modifier
-            .shadow(8.dp, RoundedCornerShape(16.dp))
+            .shadow(12.dp, RoundedCornerShape(16.dp))
             .clip(RoundedCornerShape(16.dp))
             .background(backgroundColor)
             .border(3.dp, GoldDark, RoundedCornerShape(16.dp))
@@ -61,7 +67,9 @@ fun GameButton(
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.Bold
+            ),
             textAlign = TextAlign.Center
         )
     }
@@ -72,7 +80,7 @@ fun GameIconButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = Gold,
+    backgroundColor: Brush = Brush.verticalGradient(listOf(GradientGoldStart, GradientGoldEnd)),
     textColor: Color = TextOnGold,
     enabled: Boolean = true
 ) {
@@ -86,10 +94,10 @@ fun GameIconButton(
 
     Box(
         modifier = modifier
-            .shadow(12.dp, RoundedCornerShape(20.dp))
+            .shadow(16.dp, RoundedCornerShape(20.dp))
             .clip(RoundedCornerShape(20.dp))
             .background(backgroundColor)
-            .border(3.dp, GoldDark, RoundedCornerShape(20.dp))
+            .border(3.dp, GoldDeep, RoundedCornerShape(20.dp))
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -102,7 +110,9 @@ fun GameIconButton(
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.ExtraBold
+            ),
             textAlign = TextAlign.Center
         )
     }
