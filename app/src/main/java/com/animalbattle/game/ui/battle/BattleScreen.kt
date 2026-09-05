@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +43,25 @@ import com.animalbattle.game.domain.model.BattlePhase
 import com.animalbattle.game.domain.model.BattleResult
 import com.animalbattle.game.domain.model.BattleState
 import com.animalbattle.game.domain.model.GameConfig
+import com.animalbattle.game.ui.battle.animation.AnimationState
+import com.animalbattle.game.ui.battle.animation.AnimationStateManager
+import com.animalbattle.game.ui.battle.camera.GameCameraState
+import com.animalbattle.game.ui.battle.camera.rememberGameCameraState
+import com.animalbattle.game.ui.battle.camera.CameraPresets
+import com.animalbattle.game.ui.battle.camera.cameraTransform
+import com.animalbattle.game.ui.battle.environment.BattleEnvironment
+import com.animalbattle.game.ui.battle.environment.EnvironmentType
+import com.animalbattle.game.ui.battle.particles.ParticlePool
+import com.animalbattle.game.ui.battle.particles.ParticleEffectLayer
+import com.animalbattle.game.ui.battle.particles.ParticleType
+import com.animalbattle.game.ui.battle.particles.ScreenFlash
+import com.animalbattle.game.ui.battle.premium.PremiumHealthBar
+import com.animalbattle.game.ui.battle.premium.PremiumTimer
+import com.animalbattle.game.ui.battle.premium.ComboCounter
+import com.animalbattle.game.ui.battle.premium.BoostMeter
+import com.animalbattle.game.ui.battle.premium.RaceProgressBar
+import com.animalbattle.game.ui.battle.premium.PremiumQuestionPanel
+import com.animalbattle.game.ui.battle.premium.FinishOverlay
 import com.animalbattle.game.ui.components.AnimatedAnimal
 import com.animalbattle.game.ui.components.ConnectionStatusIndicator
 import com.animalbattle.game.ui.components.AnimalSize
@@ -50,7 +71,6 @@ import com.animalbattle.game.ui.components.GamePanel
 import com.animalbattle.game.ui.components.HealthBar
 import com.animalbattle.game.ui.components.PowerIndicator
 import com.animalbattle.game.ui.components.FloatingDamageNumber
-import com.animalbattle.game.ui.components.ScreenFlash
 import com.animalbattle.game.ui.theme.Cream
 import com.animalbattle.game.ui.theme.VictoryGreen
 import kotlinx.coroutines.delay
@@ -63,11 +83,11 @@ import com.animalbattle.game.ui.theme.HpRed
 import com.animalbattle.game.ui.theme.PanelBackground
 import com.animalbattle.game.ui.theme.TextOnGold
 import com.animalbattle.game.ui.theme.TextPrimary
-import com.animalbattle.game.ui.theme.VictoryGreen
 import com.animalbattle.game.ui.theme.XpBlue
 import com.animalbattle.game.ui.theme.XpRed
 import com.animalbattle.game.viewmodel.GameViewModel
 import kotlinx.coroutines.delay
+import kotlin.random.Random
 
 @Composable
 fun BattleScreen(
@@ -196,22 +216,91 @@ private fun BattleArena(
     ScreenFlash(trigger = showPlayerFlash, color = DefeatRed, intensity = 0.25f)
     ScreenFlash(trigger = showOpponentFlash, color = VictoryGreen, intensity = 0.2f)
 
+    // Camera state
+    val cameraState = rememberGameCameraState()
+    var cameraShake by remember { mutableFloatStateOf(0f) }
+    
+    // Particle pool
+    val particlePool = remember { ParticlePool(200) }
+    
+    // Environment type based on battle
+    val environmentType = remember(state) {
+        EnvironmentType.entries.toTypedArray().random()
+    }
+    
+    // Animation state manager
+    val playerAnimState = remember { AnimationStateManager() }
+    val opponentAnimState = remember { AnimationStateManager() }
+    
+    // Combo and boost tracking
+    var comboCount by remember { mutableIntStateOf(0) }
+    var boostLevel by remember { mutableFloatStateOf(0f) }
+    var playerProgress by remember { mutableFloatStateOf(0.1f) }
+    var opponentProgress by remember { mutableFloatStateOf(0.1f) }
+    
+    // Update camera based on battle phase
+    LaunchedEffect(state.battlePhase, state.isPlayerTurn) {
+        when {
+            state.battlePhase == BattlePhase.ATTACKING -> {
+                cameraState.updateTo(CameraPresets.ATTACK_CLOSE)
+                cameraState.shake(12f)
+                particlePool.emit(ParticleType.HIT, 
+                    cameraState.x + 200f, cameraState.y + 100f)
+            }
+            state.isPlayerTurn -> cameraState.updateTo(CameraPresets.BATTLE_DEFAULT)
+            !state.isPlayerTurn -> cameraState.updateTo(CameraPresets.FOCUS_OPPONENT)
+        }
+    }
+    
     Box(modifier = Modifier.fillMaxSize()) {
+    // Environment background with parallax
+    BattleEnvironment(
+        type = environmentType,
+        parallaxOffset = cameraState.x,
+        modifier = Modifier.fillMaxSize()
+    ) {
+    // Particle layer on top of environment
+    ParticleEffectLayer(
+        particlePool = particlePool,
+        modifier = Modifier.fillMaxSize()
+    )
+    
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .cameraTransform(cameraState)
             .padding(12.dp)
     ) {
-        // Turn indicator
+        // Turn indicator with premium styling
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = if (state.isPlayerTurn) stringResource(R.string.your_turn) else stringResource(R.string.opponent_turn),
-                style = MaterialTheme.typography.headlineMedium,
-                color = if (state.isPlayerTurn) GoldDark else DefeatRed
-            )
+            Box(
+                modifier = Modifier
+                    .shadow(8.dp, RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        if (state.isPlayerTurn) 
+                            androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                listOf(VictoryGreen, VictoryGreen.copy(alpha = 0.7f))
+                            )
+                        else
+                            androidx.compose.ui.graphics.Brush.horizontalGradient(
+                                listOf(DefeatRed, DefeatRed.copy(alpha = 0.7f))
+                            )
+                    )
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (state.isPlayerTurn) "⚔️ ${stringResource(R.string.your_turn)}" else "🛡️ ${stringResource(R.string.opponent_turn)}",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold
+                    ),
+                    color = Color.White
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -502,6 +591,8 @@ private fun BattleArena(
             }
         }
     }
+    } // Close Column
+    } // Close Environment Box
     } // Close wrapper Box
 }
 
