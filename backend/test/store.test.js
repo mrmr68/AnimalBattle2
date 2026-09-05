@@ -204,3 +204,90 @@ test('syncPlayerState updates player and returns updated row', async () => {
   assert.equal(result.coins, 500);
   assert.equal(result.trophies, 45);
 });
+
+// ── recordMatchResult (server-authoritative online results) ──
+
+test('recordMatchResult requires a valid nonce', async () => {
+  const pool = new StubPool();
+  await assert.rejects(
+    () => store.recordMatchResult(pool, {
+      matchId: 'ABC123', playerId: 1, opponentId: 2, winnerPlayerId: '1', stats: {}, nonce: 'short',
+    }),
+    (err) => err.statusCode === 403
+  );
+});
+
+test('recordMatchResult awards canonical win rewards', async () => {
+  let captured;
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET') && t.includes('coins = coins + $2'),
+      result: (params) => {
+        captured = { coinsDelta: params[1], xpDelta: params[2], trophiesDelta: params[3] };
+        return {
+          rows: [{ id: 1, name: 'Ali', coins: 125, xp: 20, trophies: 1, level: 1 }],
+          rowCount: 1,
+        };
+      },
+    },
+    {
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: { rows: [], rowCount: 1 },
+    },
+  ]);
+
+  const result = await store.recordMatchResult(pool, {
+    matchId: 'ABC123', playerId: 1, opponentId: 2, winnerPlayerId: '1',
+    stats: { perfectAnswers: 2 }, nonce: 'nonce-very-long-001',
+  });
+
+  assert.equal(result.result, 'win');
+  assert.equal(captured.coinsDelta, 25);
+  assert.equal(captured.xpDelta, 20);
+  assert.equal(captured.trophiesDelta, 1);
+  assert.equal(result.rewards.coins, 25);
+  assert.equal(result.rewards.xp, 20);
+  assert.equal(result.rewards.trophies, 1);
+});
+
+test('recordMatchResult awards loss rewards and never trophies', async () => {
+  let captured;
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET'),
+      result: (params) => {
+        captured = { coinsDelta: params[1], xpDelta: params[2], trophiesDelta: params[3] };
+        return { rows: [{ id: 1, name: 'Ali', coins: 105, xp: 5, trophies: 0, level: 1 }], rowCount: 1 };
+      },
+    },
+    {
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: { rows: [], rowCount: 1 },
+    },
+  ]);
+
+  const result = await store.recordMatchResult(pool, {
+    matchId: 'ABC123', playerId: 1, opponentId: 2, winnerPlayerId: '2',
+    stats: {}, nonce: 'nonce-very-long-002',
+  });
+
+  assert.equal(result.result, 'loss');
+  assert.equal(captured.coinsDelta, 5);
+  assert.equal(captured.xpDelta, 5);
+  assert.equal(captured.trophiesDelta, 0);
+});
+
+test('recordMatchResult returns 404 for unknown player', async () => {
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET'),
+      result: { rows: [], rowCount: 0 },
+    },
+  ]);
+  await assert.rejects(
+    () => store.recordMatchResult(pool, {
+      matchId: 'ABC123', playerId: 999, opponentId: 2, winnerPlayerId: '999', stats: {}, nonce: 'nonce-very-long-003',
+    }),
+    (err) => err.statusCode === 404
+  );
+});

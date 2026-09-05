@@ -133,6 +133,27 @@ function createApp({ pool } = {}) {
     return Math.max(1, Math.min(n, 100));
   }
 
+  // Server-authoritative online match result. Client submits raw facts +
+  // nonce; server decides winner and rewards (Part 6 security).
+  app.post('/api/v1/matches/result', requirePlayerId, wrap(async (req, res) => {
+    const { matchId, opponentId, winnerPlayerId, stats, nonce } = req.body || {};
+    if (typeof matchId !== 'string' || matchId.length < 4 || matchId.length > 32) {
+      return res.status(400).json({ error: 'matchId is required (4-32 chars)' });
+    }
+    if (typeof winnerPlayerId !== 'string' && typeof winnerPlayerId !== 'number') {
+      return res.status(400).json({ error: 'winnerPlayerId is required' });
+    }
+    const result = await store.recordMatchResult(db, {
+      matchId,
+      playerId: req.playerId,
+      opponentId: opponentId ? Number(opponentId) : null,
+      winnerPlayerId: String(winnerPlayerId),
+      stats: stats || {},
+      nonce,
+    });
+    res.status(201).json(result);
+  }));
+
   // 404 for unknown API routes
   app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
 

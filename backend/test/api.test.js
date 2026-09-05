@@ -231,3 +231,45 @@ test('PUT /players/me/sync returns 404 when player not found', async () => {
   });
   assert.equal(res.status, 404);
 });
+
+test('POST /matches/result requires X-Player-Id', async () => {
+  const app = createApp({ pool: new StubPool() });
+  const res = await call(app, 'POST', '/api/v1/matches/result', {
+    body: { matchId: 'ABC123', winnerPlayerId: '1', nonce: 'nonce-very-long-004' },
+  });
+  assert.equal(res.status, 401);
+});
+
+test('POST /matches/result validates matchId', async () => {
+  const app = createApp({ pool: new StubPool() });
+  const res = await call(app, 'POST', '/api/v1/matches/result', {
+    headers: { 'X-Player-Id': '1' },
+    body: { matchId: 'AB', winnerPlayerId: '1', nonce: 'nonce-very-long-005' },
+  });
+  assert.equal(res.status, 400);
+});
+
+test('POST /matches/result records server-authoritative result', async () => {
+  const pool = new StubPool([
+    {
+      match: (t) => t.includes('UPDATE players SET'),
+      result: { rows: [{ id: 1, name: 'Ali', coins: 125, xp: 20, trophies: 1, level: 1 }], rowCount: 1 },
+    },
+    {
+      match: (t) => t.includes('INSERT INTO match_records'),
+      result: { rows: [], rowCount: 1 },
+    },
+  ]);
+  const app = createApp({ pool });
+  const res = await call(app, 'POST', '/api/v1/matches/result', {
+    headers: { 'X-Player-Id': '1' },
+    body: {
+      matchId: 'ABC123', opponentId: '2', winnerPlayerId: '1',
+      stats: { perfectAnswers: 2 }, nonce: 'nonce-very-long-006',
+    },
+  });
+  assert.equal(res.status, 201);
+  assert.equal(res.json.result, 'win');
+  assert.equal(res.json.rewards.coins, 25);
+  assert.equal(res.json.rewards.xp, 20);
+});

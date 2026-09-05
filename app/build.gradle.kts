@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,6 +9,12 @@ plugins {
 fun propertyOrEmpty(name: String): String =
     (project.findProperty(name) as String?) ?: ""
 
+// Load version.properties (single source of truth for release versioning).
+val versionProps = Properties().apply {
+    val f = rootProject.file("app/version.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
 android {
     namespace = "com.animalbattle.game"
     compileSdk = 34
@@ -15,8 +23,8 @@ android {
         applicationId = "com.animalbattle.game"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = versionProps.getProperty("VERSION_CODE")?.toIntOrNull() ?: 1
+        versionName = versionProps.getProperty("VERSION_NAME") ?: "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

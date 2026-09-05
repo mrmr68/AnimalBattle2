@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ system splash screen: dark indigo background with the
+         app icon centered. No extra dependency required. -->
+    <style name="Theme.AnimalBattle.Splash" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowSplashScreenBackground">#1A237E</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenAnimationDuration">400</item>
+        <item name="android:statusBarColor">#1A237E</item>
+        <item name="android:navigationBarColor">#1A237E</item>
+        <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+</resources>

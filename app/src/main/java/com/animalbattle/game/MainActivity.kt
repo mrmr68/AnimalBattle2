@@ -14,6 +14,9 @@ import com.animalbattle.game.ui.theme.Cream
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Swap the branded splash theme for the game theme once the
+        // window is ready (keep the splash visible during onCreate).
+        setTheme(R.style.Theme_AnimalBattle)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

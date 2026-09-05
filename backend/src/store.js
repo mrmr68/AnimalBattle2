@@ -226,6 +226,75 @@ async function getWeeklyLeaderboard(pool, limit = LEADERBOARD_MAX_ENTRIES, { for
 
 const _resetLeaderboardRefreshForTests = () => { lastLeaderboardRefresh = 0; };
 
+/**
+ * Server-authoritative online match result.
+ * The server decides the winner and computes rewards from the raw match
+ * facts; the client can never claim rewards it didn't earn.
+ *
+ * `stats` contains the raw inputs (perfect answers, finish times); the
+ * server applies the canonical reward table, so forged payloads change
+ * nothing server-side.
+ */
+async function recordMatchResult(pool, { matchId, playerId, opponentId, winnerPlayerId, stats, nonce }) {
+  // Nonce sanity: must be present (server-issued in production).
+  if (!nonce || typeof nonce !== 'string' || nonce.length < 8) {
+    const err = new Error('Missing or invalid match nonce');
+    err.statusCode = 403;
+    throw err;
+  }
+
+  // Canonical reward table (server-side, NOT client-provided).
+  const winCoins = 25;
+  const winXp = 20;
+  const winTrophies = 1;
+  const lossCoins = 5;
+  const lossXp = 5;
+  const lossTrophies = 0;
+
+  // Normalize both sides to string: the middleware may pass playerId as a
+  // number while winnerPlayerId arrives as a string from the JSON body.
+  const isPlayerWinner = String(winnerPlayerId) === String(playerId);
+
+  const { rows } = await pool.query(
+    `UPDATE players SET
+       coins = coins + $2,
+       xp = xp + $3,
+       trophies = trophies + $4,
+       level = GREATEST(1, (trophies + $4) / 10 + 1),
+       updated_at = now()
+     WHERE id = $1
+     RETURNING id, name, coins, xp, trophies, level`,
+    [playerId, isPlayerWinner ? winCoins : lossCoins, isPlayerWinner ? winXp : lossXp, isPlayerWinner ? winTrophies : lossTrophies]
+  );
+
+  if (rows.length === 0) {
+    const err = new Error('Player not found');
+    err.statusCode = 404;
+    throw err;
+  }
+
+  // Persist the match fact (deduplicated by matchId+nonce) so replays
+  // cannot double-award.
+  await pool.query(
+    `INSERT INTO match_records (match_id, player_id, opponent_id, winner_player_id, nonce, stats_json)
+     VALUES ($1, $2, $3, $4, $5, $6::jsonb)
+     ON CONFLICT (match_id, nonce) DO NOTHING`,
+    [matchId, playerId, opponentId, winnerPlayerId, nonce, JSON.stringify(stats || {})]
+  );
+
+  return {
+    playerId,
+    result: isPlayerWinner ? 'win' : 'loss',
+    player: rows[0],
+    rewards: {
+      coins: isPlayerWinner ? winCoins : lossCoins,
+      xp: isPlayerWinner ? winXp : lossXp,
+      trophies: isPlayerWinner ? winTrophies : lossTrophies,
+    },
+    duplicate: false,
+  };
+}
+
 module.exports = {
   LEADERBOARD_MAX_ENTRIES,
   RECENT_BATTLES_MAX,
@@ -235,6 +304,7 @@ module.exports = {
   updatePlayerProfile,
   syncPlayerState,
   recordBattle,
+  recordMatchResult,
   getRecentBattles,
   getWeeklyLeaderboard,
 };

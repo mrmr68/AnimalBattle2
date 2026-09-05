@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Branded splash shown while the app window initializes (pre-Android 12).
+         MainActivity swaps to Theme.AnimalBattle in onCreate. -->
+    <style name="Theme.AnimalBattle.Splash" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="android:statusBarColor">#1A237E</item>
+        <item name="android:navigationBarColor">#1A237E</item>
+    </style>
+</resources>
