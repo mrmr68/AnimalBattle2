@@ -159,9 +159,10 @@ object SmartOpponentAI {
         // Obstacle handling: if an obstacle is near, prefer the move that
         // clears it (3 = jump/long-jump in our movement model).
         if (distanceToNextObstacle != null && distanceToNextObstacle < 0.15f) {
-            // Small chance to mis-time it on lower difficulties
+            // Small chance to mis-time it on lower difficulties — pick
+            // a safe but suboptimal move instead of the optimal jump (3)
             if (rng.nextFloat() > skill) {
-                return if (rng.nextBoolean()) 1 to false else 1 to false
+                return if (rng.nextBoolean()) 1 to false else 2 to false
             }
             return if (obstacleIsJumpable) 3 to false else 1 to false
         }

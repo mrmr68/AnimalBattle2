@@ -222,9 +222,10 @@ class GameplayCore(
             movement3Used = movement.movement3Used + if (movementType == 3) 1 else 0
         )
 
+        val newProgress = (player.progress + speed).coerceAtMost(1f)
         player = player.copy(
-            progress = (player.progress + speed).coerceAtMost(1f),
-            position = player.progress * config.trackLength,
+            progress = newProgress,
+            position = newProgress * config.trackLength,
             isBoosting = boost,
             speed = speed
         )
